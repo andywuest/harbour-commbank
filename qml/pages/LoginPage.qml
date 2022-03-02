@@ -10,25 +10,25 @@ Page {
     allowedOrientations: Orientation.All
 
     function connectSlots() {
-        console.log("connect - slots");
+        console.log("[LoginPage] connect - slots");
         // var dataBackend = getSecurityDataBackend(watchlistSettings.dataBackend);
         commbankService.loginResultAvailable.connect(loginResultHandler);
         commbankService.requestError.connect(errorResultHandler);
     }
 
     function disconnectSlots() {
-        console.log("disconnect - slots");
+        console.log("[LoginPage] disconnect - slots");
         // var dataBackend = getSecurityDataBackend(watchlistSettings.dataBackend);
         commbankService.loginResultAvailable.disconnect(loginResultHandler);
         commbankService.requestError.disconnect(errorResultHandler);
     }
 
     function loginResultHandler(result) {
-
     }
 
     function errorResultHandler(result) {
-        console.log("error !!!!");
+        console.log("[LoginPage] error received - " + result);
+        errorTextField.text = result;
         loaded = true;
     }
 
@@ -67,9 +67,30 @@ Page {
                 text: "Login"
                 onClicked: {
                     console.log("clicked");
+                    errorTextField.text = "";
                     commbankService.performLogin("username");
                 }
             }
+
+            Label {
+                text: qsTr("Error:")
+                width: parent.width
+                color: Theme.secondaryHighlightColor
+                font.pixelSize: Theme.fontSizeExtraLarge
+            }
+
+            TextField {
+                id: errorTextField
+                placeholderText: "-"
+                width: parent.width
+                readOnly: true
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    margins: Theme.paddingLarge
+                }
+            }
+
         }
     }
 

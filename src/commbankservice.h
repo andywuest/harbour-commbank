@@ -34,6 +34,9 @@ private:
     QString sessionId;
     QString requestId;
 
+    QString createRequestId();
+    QString createSessionId();
+
     void connectErrorSlot(QNetworkReply *reply);
 
     void executeResourceOwnerPasswordCredentialsFlow(const QUrl &url);

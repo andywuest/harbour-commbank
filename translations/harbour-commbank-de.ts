@@ -37,6 +37,10 @@
         <source>Login Page</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Error:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SecondPage</name>

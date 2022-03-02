@@ -4,6 +4,7 @@
 
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QUuid>
 
 CommbankService::CommbankService(QObject *parent)
     : QObject(parent)
@@ -13,8 +14,19 @@ CommbankService::CommbankService(QObject *parent)
     qDebug() << "Initializing Data Backend...";
 }
 
+QString CommbankService::createRequestId() {
+  return QString::number(QDateTime::currentMSecsSinceEpoch()).right(9);
+}
+
+QString CommbankService::createSessionId() {
+  return QUuid::createUuid().toString();
+}
+
 void CommbankService::performLogin(const QString &loginData) {
     qDebug() << "login data : " << loginData;
+
+    // qDebug() << createSessionId();
+    // qDebug() << createRequestId();
 
     executeResourceOwnerPasswordCredentialsFlow(QUrl(URL_OAUTH_TOKEN));
 }
@@ -24,11 +36,21 @@ void CommbankService::connectErrorSlot(QNetworkReply *reply) {
     connect(reply,
             static_cast<void (QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error),
             [=](QNetworkReply::NetworkError error) {
+                QByteArray result = reply->readAll();
                 // TODO test reply->deleteLater();
                 qWarning() << "CommbankService::handleRequestError:" << static_cast<int>(error)
-                           << reply->errorString() << reply->readAll();
-                emit requestError("Return code: " + QString::number(static_cast<int>(error)) + " - "
-                                  + reply->errorString());
+                           << reply->errorString() << result;
+
+                QJsonDocument jsonDocument = QJsonDocument::fromJson(result);
+                if (jsonDocument.isObject()) {
+                    QJsonObject responseObject = jsonDocument.object();
+                    QString errorDescription = responseObject["error_description"].toString();
+                    qWarning () << "error description : " << errorDescription;
+                    emit requestError(errorDescription);
+                } else {
+                    emit requestError("Return code: " + QString::number(static_cast<int>(error)) + " - "
+                                      + reply->errorString());
+                }
             });
 }
 
@@ -98,8 +120,12 @@ void CommbankService::executeGetSessionStatus(const QUrl &url) {
     request.setHeader(QNetworkRequest::ContentTypeHeader, MIME_TYPE_JSON);
     request.setRawHeader("Accept", MIME_TYPE_JSON);
     request.setRawHeader("Authorization", QString("Bearer ").append(this->accessToken).toUtf8());
-    this->sessionId = "TODO";
-    this->requestId = "TODO";
+    this->sessionId = createSessionId();
+    this->requestId = createRequestId();
+
+    qDebug() << "sessionId : " << this->sessionId;
+    qDebug() << "requestId : " << this->requestId;
+
     request.setRawHeader("x-http-request-info",
                          QString("{\"clientRequestId\":{\"sessionId\":\"{{%1}}\",\"requestId\":\"{{%2}}\"}}")
                          .arg(sessionId, requestId).toUtf8());
