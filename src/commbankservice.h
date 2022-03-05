@@ -18,6 +18,7 @@ public:
 
     Q_SIGNAL void loginResultAvailable(const QString &reply);
     Q_SIGNAL void requestError(const QString &errorMessage);
+    Q_SIGNAL void challengeRequired(const QString &challenge, const QString &challengeType);
 
 signals:
 
@@ -33,21 +34,29 @@ private:
     QString refreshToken;
     QString sessionId;
     QString requestId;
+    QString identifier;
 
     QString createRequestId();
     QString createSessionId();
 
     void connectErrorSlot(QNetworkReply *reply);
 
+    void logResponseHeaders(QNetworkReply *reply);
+
     void executeResourceOwnerPasswordCredentialsFlow(const QUrl &url);
-    void processExecuteResourceOwnerPasswordCredentialsFlowResult(QByteArray replyData);
+    void processExecuteResourceOwnerPasswordCredentialsFlowResult(QByteArray responseData);
 
     void executeGetSessionStatus(const QUrl &url);
-    void processGetSessionStatusResult(QByteArray replyData);
+    void processGetSessionStatusResult(QByteArray responseData);
+
+    void executeCreateSessionTan(const QUrl &url);
+    void processCreateSessionTanResult(QByteArray responseData, QNetworkReply *reply);
+
 
 private slots:
     void handleExecuteResourceOwnerPasswordCredentialsFlowFinished();
     void handleGetSessionStatusFinished();
+    void handleCreateSessionTanFinished();
 
 };
 

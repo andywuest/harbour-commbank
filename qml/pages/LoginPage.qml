@@ -13,6 +13,7 @@ Page {
         console.log("[LoginPage] connect - slots");
         // var dataBackend = getSecurityDataBackend(watchlistSettings.dataBackend);
         commbankService.loginResultAvailable.connect(loginResultHandler);
+        commbankService.challengeRequired.connect(challengeRequiredHandler);
         commbankService.requestError.connect(errorResultHandler);
     }
 
@@ -20,10 +21,15 @@ Page {
         console.log("[LoginPage] disconnect - slots");
         // var dataBackend = getSecurityDataBackend(watchlistSettings.dataBackend);
         commbankService.loginResultAvailable.disconnect(loginResultHandler);
+        commbankService.challengeRequired.disconnect(challengeRequiredHandler);
         commbankService.requestError.disconnect(errorResultHandler);
     }
 
     function loginResultHandler(result) {
+    }
+
+    function challengeRequiredHandler(challenge, challengeType) {
+        console.log("[LoginPage] challenge/challengeType " + challenge + "/" + challengeType);
     }
 
     function errorResultHandler(result) {
