@@ -30,6 +30,7 @@ Page {
 
     function challengeRequiredHandler(challenge, challengeType) {
         console.log("[LoginPage] challenge/challengeType " + challenge + "/" + challengeType);
+        sendChallengeButton.visible = true;
     }
 
     function errorResultHandler(result) {
@@ -94,6 +95,17 @@ Page {
                     left: parent.left
                     right: parent.right
                     margins: Theme.paddingLarge
+                }
+            }
+
+            Button {
+                id: sendChallengeButton
+                text: qsTr("Send Challenge")
+                visible: false
+                onClicked: {
+                    console.log("clicked send challenge");
+                    errorTextField.text = "";
+                    commbankService.sendChallengeResponse("");
                 }
             }
 
