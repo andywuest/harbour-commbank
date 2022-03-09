@@ -12,17 +12,17 @@ Page {
     function connectSlots() {
         console.log("[LoginPage] connect - slots");
         // var dataBackend = getSecurityDataBackend(watchlistSettings.dataBackend);
-        commbankService.loginResultAvailable.connect(loginResultHandler);
-        commbankService.challengeRequired.connect(challengeRequiredHandler);
-        commbankService.requestError.connect(errorResultHandler);
+//        commbankService.loginResultAvailable.connect(loginResultHandler);
+//        commbankService.challengeRequired.connect(challengeRequiredHandler);
+//        commbankService.requestError.connect(errorResultHandler);
     }
 
     function disconnectSlots() {
         console.log("[LoginPage] disconnect - slots");
         // var dataBackend = getSecurityDataBackend(watchlistSettings.dataBackend);
-        commbankService.loginResultAvailable.disconnect(loginResultHandler);
-        commbankService.challengeRequired.disconnect(challengeRequiredHandler);
-        commbankService.requestError.disconnect(errorResultHandler);
+//        commbankService.loginResultAvailable.disconnect(loginResultHandler);
+//        commbankService.challengeRequired.disconnect(challengeRequiredHandler);
+//        commbankService.requestError.disconnect(errorResultHandler);
     }
 
     function loginResultHandler(result) {
@@ -70,12 +70,22 @@ Page {
                 color: Theme.secondaryHighlightColor
                 font.pixelSize: Theme.fontSizeExtraLarge
             }
+
             Button {
                 text: "Login"
                 onClicked: {
                     console.log("clicked");
                     errorTextField.text = "";
                     commbankService.performLogin("username");
+                }
+            }
+
+            Button {
+                text: "Credentials"
+                onClicked: {
+                    console.log("credentials clicked");
+                    errorTextField.text = "";
+                    pageStack.push(Qt.resolvedUrl("CredentialsPage.qml"))
                 }
             }
 

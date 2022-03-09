@@ -28,13 +28,11 @@ QString CommbankService::createSessionId() {
       .replace("-", "");
 }
 
-void CommbankService::performLogin(const QString &loginData) {
-  qDebug() << "login data : " << loginData;
+void CommbankService::performLogin(const QString &clientId, const QString &clientSecret,
+                                   const QString &username, const QString &password) {
+  qDebug() << "CommbankService::performLogin : ";
 
-  // qDebug() << createSessionId();
-  // qDebug() << createRequestId();
-
-  executeResourceOwnerPasswordCredentialsFlow(QUrl(URL_OAUTH_TOKEN));
+  executeResourceOwnerPasswordCredentialsFlow(QUrl(URL_OAUTH_TOKEN), clientId, clientSecret, username, password);
 }
 
 void CommbankService::connectErrorSlot(QNetworkReply *reply) {
@@ -52,10 +50,19 @@ void CommbankService::connectErrorSlot(QNetworkReply *reply) {
             QJsonDocument jsonDocument = QJsonDocument::fromJson(result);
             if (jsonDocument.isObject()) {
               QJsonObject responseObject = jsonDocument.object();
-              QString errorDescription =
-                  responseObject["error_description"].toString();
-              qWarning() << "error description : " << errorDescription;
-              emit requestError(errorDescription);
+
+              // responses do not always look the same
+              if (!responseObject["error_description"].toString().isEmpty()) {
+                  QString errorDescription =
+                      responseObject["error_description"].toString();
+                  qWarning() << "error description : " << errorDescription;
+                  emit requestError(errorDescription);
+              } else if (!responseObject["messages"].toArray().isEmpty()) {
+                  QJsonArray messageArray = responseObject["messages"].toArray();
+                  QString errorDescription = messageArray.at(0).toObject()["message"].toString();
+                  qWarning() << "error description : " << errorDescription;
+                  emit requestError(errorDescription);
+              }
             } else {
               emit requestError(
                   "Return code: " + QString::number(static_cast<int>(error)) +
@@ -72,7 +79,8 @@ void CommbankService::logResponseHeaders(QNetworkReply *reply) {
 }
 
 void CommbankService::executeResourceOwnerPasswordCredentialsFlow(
-    const QUrl &url) {
+    const QUrl &url, const QString &clientId, const QString &clientSecret,
+        const QString &username, const QString &password) {
   qDebug() << "CommbankService::executeGetRequest " << url;
 
   QNetworkRequest request(url);
@@ -82,11 +90,11 @@ void CommbankService::executeResourceOwnerPasswordCredentialsFlow(
   request.setHeader(QNetworkRequest::UserAgentHeader, USER_AGENT);
 
   QUrlQuery postData;
-  postData.addQueryItem("client_id", CLIENT_ID);
-  postData.addQueryItem("client_secret", CLIENT_SECRET);
+  postData.addQueryItem("client_id", clientId);
+  postData.addQueryItem("client_secret", clientSecret);
   postData.addQueryItem("grant_type", "password");
-  postData.addQueryItem("username", USERNAME);
-  postData.addQueryItem("password", PASSWORD);
+  postData.addQueryItem("username", username);
+  postData.addQueryItem("password", password);
 
   request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
 
@@ -121,8 +129,8 @@ void CommbankService::processExecuteResourceOwnerPasswordCredentialsFlowResult(
   }
 
   QJsonObject responseObject = jsonDocument.object();
-  this->accessToken = responseObject["access_token"].toString();
-  this->refreshToken = responseObject["refresh_token"].toString();
+  this->accessTokenLogin = responseObject["access_token"].toString();
+  this->refreshTokenLogin = responseObject["refresh_token"].toString();
   QString tokenType = responseObject["token_type"].toString();
   QString scope = responseObject["scope"].toString();
   QString kdnr = responseObject["kdnr"].toString();
@@ -135,8 +143,8 @@ void CommbankService::processExecuteResourceOwnerPasswordCredentialsFlowResult(
               "parseExecuteResourceOwnerPasswordCredentialsFlowResult => "
            << responseData;
 
-  qDebug() << " access token : " << this->accessToken;
-  qDebug() << " refresh token : " << this->refreshToken;
+  qDebug() << " access token (Login) : " << this->accessTokenLogin;
+  qDebug() << " refresh token (Login) : " << this->refreshTokenLogin;
   qDebug() << " expires in : " << expiresIn;
 
   executeGetSessionStatus(QUrl(URL_SESSIONS));
@@ -159,7 +167,7 @@ void CommbankService::executeGetSessionStatus(const QUrl &url) {
   request.setHeader(QNetworkRequest::ContentTypeHeader, MIME_TYPE_JSON);
   request.setRawHeader("Accept", MIME_TYPE_JSON);
   request.setRawHeader("Authorization",
-                       QString("Bearer ").append(this->accessToken).toUtf8());
+                       QString("Bearer ").append(this->accessTokenLogin).toUtf8());
   request.setRawHeader("x-http-request-info", requestInfoString.toUtf8());
 
   QNetworkReply *reply = networkAccessManager->get(request);
@@ -226,7 +234,7 @@ void CommbankService::executeCreateSessionTan(const QUrl &url) {
   request.setHeader(QNetworkRequest::ContentTypeHeader, MIME_TYPE_JSON);
   request.setRawHeader("Accept", MIME_TYPE_JSON);
   request.setRawHeader("Authorization",
-                       QString("Bearer ").append(this->accessToken).toUtf8());
+                       QString("Bearer ").append(this->accessTokenLogin).toUtf8());
   request.setRawHeader("x-http-request-info", requestInfoString.toUtf8());
 
   QJsonObject body;
@@ -287,13 +295,15 @@ void CommbankService::processCreateSessionTanResult(QByteArray responseData,
   qDebug() << " challenge : " << challenge;
   qDebug() << " availableTypes : " << availableTypesArray;
 
-  if (QString("P_TAN").compare(this->challengeType) == 0 ||
-      QString("M_TAN").compare(this->challengeType) == 0) {
-    emit challengeRequired(challenge, this->challengeType);
-  } else {
-    // TODO process push here -> accept happens in app
-      emit challengeRequired(challenge, this->challengeType);
-  }
+//  if (QString("P_TAN").compare(this->challengeType) == 0 ||
+//      QString("M_TAN").compare(this->challengeType) == 0) {
+//    emit challengeRequired(challenge, this->challengeType);
+//  } else {
+//  }
+
+  // TODO process push here -> accept happens in app
+  emit loginResultAvailable(challenge, this->challengeType);
+
 
   QString result = QString(responseData);
   qDebug() << "CommbankService::processCreateSessionTanResult => "
@@ -319,7 +329,7 @@ void CommbankService::executeActivateSessionTan(const QUrl &url, const QString &
     request.setHeader(QNetworkRequest::ContentTypeHeader, MIME_TYPE_JSON);
     request.setRawHeader("Accept", MIME_TYPE_JSON);
     request.setRawHeader("Authorization",
-                         QString("Bearer ").append(this->accessToken).toUtf8());
+                         QString("Bearer ").append(this->accessTokenLogin).toUtf8());
     request.setRawHeader("x-http-request-info", requestInfoString.toUtf8());
     request.setRawHeader("x-once-authentication-info",
                          QString("{\"id\":\"%1\"}").arg(this->challengeId).toUtf8());
@@ -397,7 +407,7 @@ void CommbankService::executeCDSecondaryFlow(const QUrl &url) {
     postData.addQueryItem("client_id", CLIENT_ID);
     postData.addQueryItem("client_secret", CLIENT_SECRET);
     postData.addQueryItem("grant_type", "cd_secondary");
-    postData.addQueryItem("token", this->accessToken);
+    postData.addQueryItem("token", this->accessTokenLogin);
 
     QNetworkReply *reply =
         networkAccessManager->post(request, postData.toString().toUtf8());
@@ -421,14 +431,26 @@ void CommbankService::handleCDSecondaryFlowFinished() {
 }
 
 void CommbankService::processCDSecondaryFlowResult(QByteArray responseData, QNetworkReply *reply) {
-    QJsonDocument jsonDocumentBody = QJsonDocument::fromJson(responseData);
-    if (!jsonDocumentBody.isObject()) {
+    QJsonDocument jsonDocument = QJsonDocument::fromJson(responseData);
+    if (!jsonDocument.isObject()) {
       qDebug() << "response body not a json object!";
     }
 
     QString result = QString(responseData);
     qDebug() << "CommbankService::processCDSecondaryFlowResult => "
              << responseData;
+
+    QJsonObject responseObject = jsonDocument.object();
+    this->accessToken = responseObject["access_token"].toString();
+    this->refreshToken = responseObject["refresh_token"].toString();
+    QString bearer = responseObject["bearer"].toString();
+    QString scope = responseObject["scope"].toString();
+    int expiresIn = responseObject["expires_in"].toInt();
+
+    qDebug () << "accessToken : " << this->accessToken;
+    qDebug () << "refreshToken : " << this->accessToken;
+    qDebug () << "expires in : " << expiresIn;
+    qDebug () << "scope : " << scope;
 
     // TODO get access token for next requests -> get scopes, etc->
 
@@ -437,16 +459,111 @@ void CommbankService::processCDSecondaryFlowResult(QByteArray responseData, QNet
 //    "\"scope\":\"BANKING_RW BROKERAGE_RW MESSAGES_RO REPORTS_RO SESSION_RW\",\"kdnr\":\"12341231234\","
 //    "\"bpid\":124312348,\"kontaktId\":13412}"
 
-
-
-
+    // TODO nicht von hier aus aufrufen !!
+    executeGetAccountBalances(QUrl(URL_ACCOUNT_BALANCES));
 }
 
 
+void CommbankService::executeGetAccountBalances(const QUrl &url) {
+    qDebug() << "CommbankService::executeGetAccountBalances " << url;
+
+    qDebug() << "sessionId : " << this->sessionId;
+    qDebug() << "requestId : " << this->requestId;
+
+    QString requestInfoString = QString("{\"clientRequestId\":{\"sessionId\":\"{{"
+                                        "%1}}\",\"requestId\":\"{{%2}}\"}}")
+                                    .arg(sessionId, requestId);
+
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, MIME_TYPE_JSON);
+    request.setRawHeader("Accept", MIME_TYPE_JSON);
+    request.setRawHeader("Authorization",
+                         QString("Bearer ").append(this->accessToken).toUtf8());
+    request.setRawHeader("x-http-request-info", requestInfoString.toUtf8());
+
+    QNetworkReply *reply = networkAccessManager->get(request);
+
+    connectErrorSlot(reply);
+    connect(reply, SIGNAL(finished()), this,
+            SLOT(handleGetAccountBalancesFinished()));
+}
+
+void CommbankService::handleGetAccountBalancesFinished() {
+    qDebug() << "CommbankService::handleGetAccountBalancesFinished";
+    QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
+    reply->deleteLater();
+    if (reply->error() != QNetworkReply::NoError) {
+      return;
+    }
+
+    logResponseHeaders(reply);
+
+    processGetAccountBalancesResult(reply->readAll());
+}
+
+void CommbankService::processGetAccountBalancesResult(QByteArray responseData) {
+    QJsonDocument jsonDocumentBody = QJsonDocument::fromJson(responseData);
+    if (!jsonDocumentBody.isObject()) {
+      qDebug() << "response body not a json object!";
+    }
+
+    QString result = QString(responseData);
+    qDebug() << "CommbankService::processGetAccountBalancesResult => "
+             << responseData;
 
 
 
-/*
+//    {
+//      "paging": {
+//        "index": 0,
+//        "matches": 1
+//      },
+//      "values": [
+//        {
+//          "account": {
+//            "accountId": "6F91E9A225C74355834F5A0D9A304697",
+//            "accountDisplayId": "977869927400",
+//            "currency": "EUR",
+//            "clientId": "40E61E65146441CEBC3DD7F0C70E7051",
+//            "accountType": {
+//              "key": "SA",
+//              "text": "Verrechnungskonto"
+//            },
+//            "iban": "DE76200411440869927400",
+//            "creditLimit": {
+//              "value": "0",
+//              "unit": "EUR"
+//            }
+//          },
+//          "accountId": "6F91E9A225C74355834F5A0D9A304697",
+//          "balance": {
+//            "value": "4106.31",
+//            "unit": "EUR"
+//          },
+//          "balanceEUR": {
+//            "value": "4106.31",
+//            "unit": "EUR"
+//          },
+//          "availableCashAmount": {
+//            "value": "4106.31",
+//            "unit": "EUR"
+//          },
+//          "availableCashAmountEUR": {
+//            "value": "4106.31",
+//            "unit": "EUR"
+//          }
+//        }
+//      ]
+//    }
 
-*/
+
+
+
+
+
+
+
+    emit challengeResponseAvailable();
+}
+
 

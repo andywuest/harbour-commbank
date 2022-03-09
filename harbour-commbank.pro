@@ -20,9 +20,14 @@ SOURCES += src/harbour-commbank.cpp \
 DEFINES += VERSION_NUMBER=\\\"$$(VERSION_NUMBER)\\\"
 
 DISTFILES += qml/harbour-commbank.qml \
+    qml/components/thirdparty/LoadingIndicator.qml \
     qml/cover/CoverPage.qml \
+    qml/js/credentials.js \
+    qml/pages/AccountOverviewPage.qml \
     qml/pages/FirstPage.qml \
     qml/pages/LoginPage.qml \
+    qml/pages/CredentialsPage.qml \
+    qml/pages/SecondFactorLoginPage.qml \
     qml/pages/SecondPage.qml \
     rpm/harbour-commbank.changes.in \
     rpm/harbour-commbank.changes.run.in \
