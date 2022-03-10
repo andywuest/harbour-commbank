@@ -14,14 +14,14 @@ Page {
 
     function connectSlots() {
         console.log("[SecondFactorLoginPage] connect - slots");
-        commbankService.challengeResponseAvailable.connect(challengeResultHandler);
-        commbankService.requestError.connect(errorResultHandler);
+        commbankLoginService.challengeResponseAvailable.connect(challengeResultHandler);
+        commbankLoginService.requestError.connect(errorResultHandler);
     }
 
     function disconnectSlots() {
         console.log("[SecondFactorLoginPage] disconnect - slots");
-        commbankService.challengeResponseAvailable.disconnect(challengeResultHandler);
-        commbankService.requestError.disconnect(errorResultHandler);
+        commbankLoginService.challengeResponseAvailable.disconnect(challengeResultHandler);
+        commbankLoginService.requestError.disconnect(errorResultHandler);
     }
 
     function challengeResultHandler(result) {
@@ -87,7 +87,7 @@ Page {
                     loading = true;
                     errorInfoLabel.visible = false;
                     errorDetailInfoLabel.text = "";
-                    commbankService.sendChallengeResponse(challengeTextField.text);
+                    commbankLoginService.sendChallengeResponse(challengeTextField.text);
                 }
             }
 

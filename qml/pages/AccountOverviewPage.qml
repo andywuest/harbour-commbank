@@ -4,6 +4,42 @@ import Sailfish.Silica 1.0
 import "../components/thirdparty"
 
 Page {
+    id: overviewPage
+
+    property bool loading : false
+
+    function connectSlots() {
+        console.log("[AccountOverviewPage] connect - slots");
+        commbankAccountService.allBalancesResultAvailable.connect(allBalancesResultHandler);
+        commbankAccountService.requestError.connect(errorResultHandler);
+    }
+
+    function disconnectSlots() {
+        console.log("[AccountOverviewPage] disconnect - slots");
+        commbankAccountService.allBalancesResultAvailable.disconnect(allBalancesResultHandler);
+        commbankAccountService.requestError.disconnect(errorResultHandler);
+    }
+
+    function allBalancesResultHandler(result) {
+        // TODO move to 2FA page
+        console.log("[AccountOverviewPage] balances received : " + result);
+        loading = false;
+
+        var accounts = JSON.parse(result);
+
+        for (var i = 0; i < accounts.length; i++) {
+            accountsModel.append(accounts[i])
+        }
+
+        overviewFlickable.visible = true;
+    }
+
+    function errorResultHandler(result) {
+        console.log("[AccountOverviewPage] error received - " + result);
+        errorInfoLabel.visible = true;
+        errorDetailInfoLabel.text = result;
+        loading = false;
+    }
 
     SilicaFlickable {
         id: overviewFlickable
@@ -74,22 +110,27 @@ Page {
 
                 id: accountsListView
 
-                height: overviewPage.height - accountsHeader.height - bankNameText.height - bankCodeText.height - ( 3 * Theme.paddingMedium ) - ( overviewPage.isPortrait ? overviewImage.height + Theme.paddingMedium : 0 )
+                height: overviewPage.height - accountsHeader.height - bankNameText.height - bankCodeText.height - ( 3 * Theme.paddingMedium ) - ( overviewPage.isPortrait ? /*overviewImage.height*/ 0 + Theme.paddingMedium : 0 )
                 width: parent.width
                 anchors.left: parent.left
                 anchors.right: parent.right
 
                 clip: true
 
+                model: ListModel {
+                    id: accountsModel
+                }
+
                 delegate: ListItem {
                     contentHeight: resultItem.height + Theme.paddingMedium
                     contentWidth: parent.width
 
-                    enabled: finTsDialog.canRetrieveTransactions(modelData.accountId) || finTsDialog.canRetrievePortfolioInfo(modelData.accountId)
+                    // enabled: finTsDialog.canRetrieveTransactions(modelData.accountId) || finTsDialog.canRetrievePortfolioInfo(modelData.accountId)
 
                     onClicked: {
-                        console.log("Selected: " + modelData.accountId);
-                        pageStack.push(Qt.resolvedUrl("AccountTransactionsPage.qml"), {"accountId": modelData.accountId, "iban": modelData.iban})
+                        var selectedAccount = accountsModel.get(index);
+                        console.log("Selected: " + selectedAccount + ", index : " + index);
+                        // pageStack.push(Qt.resolvedUrl("AccountTransactionsPage.qml"), {"accountId": modelData.accountId, "iban": modelData.iban})
                     }
 
                     Item {
@@ -109,13 +150,13 @@ Page {
                                     id: accountIdText
                                     font.pixelSize: Theme.fontSizeSmall
                                     color: Theme.primaryColor
-                                    text: modelData.accountId
+                                    text: accountDisplayId
                                 }
                                 Text {
                                     id: accountDescriptionText
                                     font.pixelSize: Theme.fontSizeSmall
                                     color: Theme.primaryColor
-                                    text: modelData.accountDescription
+                                    text: accountTypeText
                                 }
                             }
                             Text {
@@ -126,7 +167,7 @@ Page {
                                 verticalAlignment: Text.AlignVCenter
                                 font.pixelSize: Theme.fontSizeMedium
                                 color: Theme.highlightColor
-                                text: (modelData.creditDebit === "D" ? "- " : "") + Number(modelData.value).toLocaleString(Qt.locale(), "f", 2) + " " + modelData.currency
+                                text: Number(accountBalanceValue).toLocaleString(Qt.locale(), "f", 2) + " " + accountBalanceUnit
                             }
                         }
 
@@ -149,6 +190,13 @@ Page {
 
         }
 
+    }
+
+    Component.onCompleted: {
+        connectSlots();
+        loading = true;
+        commbankAccountService.getAllBalances();
+        // TODO trigger loader of accounts
     }
 
     LoadingIndicator {

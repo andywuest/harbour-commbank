@@ -1,5 +1,5 @@
-#ifndef COMMBANKSERVICE_H
-#define COMMBANKSERVICE_H
+#ifndef COMMBANK_LOGIN_SERVICE_H
+#define COMMBANK_LOGIN_SERVICE_H
 
 #include <QNetworkAccessManager>
 #include <QNetworkConfigurationManager>
@@ -8,14 +8,16 @@
 #include <QSettings>
 #include <QUrlQuery>
 
+#include "abstractservice.h"
 #include "sessioncontext.h"
 
-class CommbankService : public QObject {
+class CommbankLoginService :public AbstractService {
   Q_OBJECT
 
 public:
-  explicit CommbankService(QObject *parent = nullptr);
-  ~CommbankService() = default;
+    explicit CommbankLoginService(QNetworkAccessManager *manager, QObject *parent = nullptr, SessionContext *sessionContext = nullptr);
+    ~CommbankLoginService() = default;
+
   Q_INVOKABLE void performLogin(const QString &clientId, const QString &clientSecret,
                                 const QString &username, const QString &password);
   Q_INVOKABLE void sendChallengeResponse(const QString &challengeResponse);
@@ -23,29 +25,18 @@ public:
   Q_SIGNAL void loginResultAvailable(const QString &challenge,
                                      const QString &challengeType);
   Q_SIGNAL void challengeResponseAvailable();
-  Q_SIGNAL void requestError(const QString &errorMessage);
-
-  void setSessionContext(SessionContext *sessionContext);
 
 signals:
 
 public slots:
 
 private:
-  QNetworkAccessManager *networkAccessManager;
-  QNetworkConfigurationManager *const networkConfigurationManager;
-
-  SessionContext *sessionContext;
 
   QSettings settings;
 
   QString identifier;
   QString challengeId;
   QString challengeType;
-
-  void connectErrorSlot(QNetworkReply *reply);
-
-  void logResponseHeaders(QNetworkReply *reply);
 
   void executeResourceOwnerPasswordCredentialsFlow(const QUrl &url, const QString &clientId,
                                                    const QString &clientSecret,
@@ -68,18 +59,13 @@ private:
   void processCDSecondaryFlowResult(QByteArray responseData,
                                     QNetworkReply *reply);
 
-  // TODO move to other service class
-  void executeGetAccountBalances(const QUrl &url);
-  void processGetAccountBalancesResult(QByteArray responseData);
-
-
 private slots:
   void handleExecuteResourceOwnerPasswordCredentialsFlowFinished();
   void handleGetSessionStatusFinished();
   void handleCreateSessionTanFinished();
   void handleActivateSessionTanFinished();
   void handleCDSecondaryFlowFinished();
-  void handleGetAccountBalancesFinished();
+
 };
 
-#endif // COMMBANKSERVICE_H
+#endif // COMMBANK_LOGIN_SERVICE_H

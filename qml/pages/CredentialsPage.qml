@@ -14,15 +14,15 @@ Page {
     function connectSlots() {
         console.log("[LoginPage] connect - slots");
         // var dataBackend = getSecurityDataBackend(watchlistSettings.dataBackend);
-        commbankService.loginResultAvailable.connect(loginResultHandler);
-        commbankService.requestError.connect(errorResultHandler);
+        commbankLoginService.loginResultAvailable.connect(loginResultHandler);
+        commbankLoginService.requestError.connect(errorResultHandler);
     }
 
     function disconnectSlots() {
         console.log("[LoginPage] disconnect - slots");
         // var dataBackend = getSecurityDataBackend(watchlistSettings.dataBackend);
-        commbankService.loginResultAvailable.disconnect(loginResultHandler);
-        commbankService.requestError.disconnect(errorResultHandler);
+        commbankLoginService.loginResultAvailable.disconnect(loginResultHandler);
+        commbankLoginService.requestError.disconnect(errorResultHandler);
     }
 
     function loginResultHandler(challenge, challengeType) {
@@ -101,7 +101,7 @@ Page {
                     loading = true;
                     errorInfoLabel.visible = false;
                     errorDetailInfoLabel.text = "";
-                    commbankService.performLogin(clientIdTextField.text, clientSecretTextField.text
+                    commbankLoginService.performLogin(clientIdTextField.text, clientSecretTextField.text
                                                  , usernameTextField.text, passwordField.text);
                 }
             }

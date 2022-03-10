@@ -4,7 +4,7 @@
 
 #include <sailfishapp.h>
 
-#include "commbankservice.h"
+#include "commbank.h"
 
 int main(int argc, char *argv[]) {
   // SailfishApp::main() will display "qml/harbour-commbank.qml", if you need
@@ -24,11 +24,14 @@ int main(int argc, char *argv[]) {
 
   QQmlContext *context = view.data()->rootContext();
 
-  SessionContext sessionContext;
+  Commbank commbank;
+  context->setContextProperty("commbank", &commbank);
 
-  CommbankService commbankService;
-  commbankService.setSessionContext(&sessionContext);
-  context->setContextProperty("commbankService", &commbankService);
+  CommbankLoginService *commbankLoginService = commbank.getCommbankLoginService();
+  context->setContextProperty("commbankLoginService", commbankLoginService);
+
+  CommbankAccountService *commbankAccountService = commbank.getCommbankAccountService();
+  context->setContextProperty("commbankAccountService", commbankAccountService);
 
   context->setContextProperty("applicationVersion", QString(VERSION_NUMBER));
 

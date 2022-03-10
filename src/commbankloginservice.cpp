@@ -1,4 +1,4 @@
-#include "commbankservice.h"
+#include "commbankloginservice.h"
 #include "constants.h"
 #include "credentials.h"
 
@@ -8,71 +8,22 @@
 #include <QBuffer>
 #include <QUuid>
 
-CommbankService::CommbankService(QObject *parent)
-    : QObject(parent), networkAccessManager(new QNetworkAccessManager(this)),
-      networkConfigurationManager(new QNetworkConfigurationManager(this)),
-      settings("harbour-commbank", "settings") {
-  qDebug() << "Initializing Data Backend...";
+CommbankLoginService::CommbankLoginService(QNetworkAccessManager *manager, QObject *parent, SessionContext *sessionContext)
+    : AbstractService(manager, parent, sessionContext) {
+  qDebug() << "Initializing CommbankLoginService...";
 }
 
-void CommbankService::setSessionContext(SessionContext *sessionContext) {
-    this->sessionContext = sessionContext;
-}
-
-void CommbankService::performLogin(const QString &clientId, const QString &clientSecret,
+void CommbankLoginService::performLogin(const QString &clientId, const QString &clientSecret,
                                    const QString &username, const QString &password) {
-  qDebug() << "CommbankService::performLogin : ";
+  qDebug() << "CommbankLoginService::performLogin : ";
 
   executeResourceOwnerPasswordCredentialsFlow(QUrl(URL_OAUTH_TOKEN), clientId, clientSecret, username, password);
 }
 
-void CommbankService::connectErrorSlot(QNetworkReply *reply) {
-  // connect the error and also emit the error signal via a lambda expression
-  connect(reply,
-          static_cast<void (QNetworkReply::*)(QNetworkReply::NetworkError)>(
-              &QNetworkReply::error),
-          [=](QNetworkReply::NetworkError error) {
-            QByteArray result = reply->readAll();
-            // TODO test reply->deleteLater();
-            qWarning() << "CommbankService::handleRequestError:"
-                       << static_cast<int>(error) << reply->errorString()
-                       << result;
-
-            QJsonDocument jsonDocument = QJsonDocument::fromJson(result);
-            if (jsonDocument.isObject()) {
-              QJsonObject responseObject = jsonDocument.object();
-
-              // responses do not always look the same
-              if (!responseObject["error_description"].toString().isEmpty()) {
-                  QString errorDescription =
-                      responseObject["error_description"].toString();
-                  qWarning() << "error description : " << errorDescription;
-                  emit requestError(errorDescription);
-              } else if (!responseObject["messages"].toArray().isEmpty()) {
-                  QJsonArray messageArray = responseObject["messages"].toArray();
-                  QString errorDescription = messageArray.at(0).toObject()["message"].toString();
-                  qWarning() << "error description : " << errorDescription;
-                  emit requestError(errorDescription);
-              }
-            } else {
-              emit requestError(
-                  "Return code: " + QString::number(static_cast<int>(error)) +
-                  " - " + reply->errorString());
-            }
-          });
-}
-
-void CommbankService::logResponseHeaders(QNetworkReply *reply) {
-  QList<QByteArray> headerList = reply->rawHeaderList();
-  foreach (QByteArray head, headerList) {
-    qDebug() << head << ":" << reply->rawHeader(head);
-  }
-}
-
-void CommbankService::executeResourceOwnerPasswordCredentialsFlow(
+void CommbankLoginService::executeResourceOwnerPasswordCredentialsFlow(
     const QUrl &url, const QString &clientId, const QString &clientSecret,
         const QString &username, const QString &password) {
-  qDebug() << "CommbankService::executeGetRequest " << url;
+  qDebug() << "CommbankLoginService::executeGetRequest " << url;
 
   QNetworkRequest request(url);
   request.setHeader(QNetworkRequest::ContentTypeHeader,
@@ -96,9 +47,9 @@ void CommbankService::executeResourceOwnerPasswordCredentialsFlow(
           SLOT(handleExecuteResourceOwnerPasswordCredentialsFlowFinished()));
 }
 
-void CommbankService::
+void CommbankLoginService::
     handleExecuteResourceOwnerPasswordCredentialsFlowFinished() {
-  qDebug() << "CommbankService::"
+  qDebug() << "CommbankLoginService::"
               "handleExecuteResourceOwnerPasswordCredentialsFlowFinished";
   QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
   reply->deleteLater();
@@ -111,7 +62,7 @@ void CommbankService::
   processExecuteResourceOwnerPasswordCredentialsFlowResult(reply->readAll());
 }
 
-void CommbankService::processExecuteResourceOwnerPasswordCredentialsFlowResult(
+void CommbankLoginService::processExecuteResourceOwnerPasswordCredentialsFlowResult(
     QByteArray responseData) {
   QJsonDocument jsonDocument = QJsonDocument::fromJson(responseData);
   if (!jsonDocument.isObject()) {
@@ -130,7 +81,7 @@ void CommbankService::processExecuteResourceOwnerPasswordCredentialsFlowResult(
   int expiresIn = responseObject["expires_in"].toInt();
 
   QString result = QString(responseData);
-  qDebug() << "CommbankService::"
+  qDebug() << "CommbankLoginService::"
               "parseExecuteResourceOwnerPasswordCredentialsFlowResult => "
            << responseData;
 
@@ -141,8 +92,8 @@ void CommbankService::processExecuteResourceOwnerPasswordCredentialsFlowResult(
   executeGetSessionStatus(QUrl(URL_SESSIONS));
 }
 
-void CommbankService::executeGetSessionStatus(const QUrl &url) {
-  qDebug() << "CommbankService::executeGetSessionStatus " << url;
+void CommbankLoginService::executeGetSessionStatus(const QUrl &url) {
+  qDebug() << "CommbankLoginService::executeGetSessionStatus " << url;
 
   QNetworkRequest request(url);
   request.setHeader(QNetworkRequest::ContentTypeHeader, MIME_TYPE_JSON);
@@ -158,8 +109,8 @@ void CommbankService::executeGetSessionStatus(const QUrl &url) {
           SLOT(handleGetSessionStatusFinished()));
 }
 
-void CommbankService::handleGetSessionStatusFinished() {
-  qDebug() << "CommbankService::handleGetSessionStatusFinished";
+void CommbankLoginService::handleGetSessionStatusFinished() {
+  qDebug() << "CommbankLoginService::handleGetSessionStatusFinished";
   QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
   reply->deleteLater();
   if (reply->error() != QNetworkReply::NoError) {
@@ -171,7 +122,7 @@ void CommbankService::handleGetSessionStatusFinished() {
   processGetSessionStatusResult(reply->readAll());
 }
 
-void CommbankService::processGetSessionStatusResult(QByteArray responseData) {
+void CommbankLoginService::processGetSessionStatusResult(QByteArray responseData) {
   QJsonDocument jsonDocument = QJsonDocument::fromJson(responseData);
   if (!jsonDocument.isArray()) {
     qDebug() << "not a json array!";
@@ -194,15 +145,15 @@ void CommbankService::processGetSessionStatusResult(QByteArray responseData) {
   }
 
   QString result = QString(responseData);
-  qDebug() << "CommbankService::processGetSessionStatusResult => "
+  qDebug() << "CommbankLoginService::processGetSessionStatusResult => "
            << responseData;
 
   executeCreateSessionTan(
       QUrl(QString(URL_CREATE_SESSION_TAN).arg(this->identifier)));
 }
 
-void CommbankService::executeCreateSessionTan(const QUrl &url) {
-  qDebug() << "CommbankService::executeCreateSessionTan " << url;
+void CommbankLoginService::executeCreateSessionTan(const QUrl &url) {
+  qDebug() << "CommbankLoginService::executeCreateSessionTan " << url;
 
   QNetworkRequest request(url);
   request.setHeader(QNetworkRequest::ContentTypeHeader, MIME_TYPE_JSON);
@@ -230,8 +181,8 @@ void CommbankService::executeCreateSessionTan(const QUrl &url) {
           SLOT(handleCreateSessionTanFinished()));
 }
 
-void CommbankService::handleCreateSessionTanFinished() {
-  qDebug() << "CommbankService::handleCreateSessionTanFinished";
+void CommbankLoginService::handleCreateSessionTanFinished() {
+  qDebug() << "CommbankLoginService::handleCreateSessionTanFinished";
   QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
   reply->deleteLater();
   if (reply->error() != QNetworkReply::NoError) {
@@ -243,7 +194,7 @@ void CommbankService::handleCreateSessionTanFinished() {
   processCreateSessionTanResult(reply->readAll(), reply);
 }
 
-void CommbankService::processCreateSessionTanResult(QByteArray responseData,
+void CommbankLoginService::processCreateSessionTanResult(QByteArray responseData,
                                                     QNetworkReply *reply) {
   QJsonDocument jsonDocumentBody = QJsonDocument::fromJson(responseData);
   if (!jsonDocumentBody.isObject()) {
@@ -280,18 +231,18 @@ void CommbankService::processCreateSessionTanResult(QByteArray responseData,
 
 
   QString result = QString(responseData);
-  qDebug() << "CommbankService::processCreateSessionTanResult => "
+  qDebug() << "CommbankLoginService::processCreateSessionTanResult => "
            << responseData;
 }
 
-void CommbankService::sendChallengeResponse(const QString &challengeResponse) {
-    qDebug() << "CommbankService::sendChallengeResponse " << challengeResponse;
+void CommbankLoginService::sendChallengeResponse(const QString &challengeResponse) {
+    qDebug() << "CommbankLoginService::sendChallengeResponse " << challengeResponse;
 
     executeActivateSessionTan(QUrl(QString(URL_ACTIVATE_SESSION_TAN).arg(this->identifier)), challengeResponse);
 }
 
-void CommbankService::executeActivateSessionTan(const QUrl &url, const QString &challengeResponse) {
-    qDebug() << "CommbankService::executeActivateSessionTan " << challengeResponse;
+void CommbankLoginService::executeActivateSessionTan(const QUrl &url, const QString &challengeResponse) {
+    qDebug() << "CommbankLoginService::executeActivateSessionTan " << challengeResponse;
 
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, MIME_TYPE_JSON);
@@ -335,8 +286,8 @@ void CommbankService::executeActivateSessionTan(const QUrl &url, const QString &
             SLOT(handleActivateSessionTanFinished()));
 }
 
-void CommbankService::handleActivateSessionTanFinished() {
-    qDebug() << "CommbankService::handleActivateSessionTanFinished";
+void CommbankLoginService::handleActivateSessionTanFinished() {
+    qDebug() << "CommbankLoginService::handleActivateSessionTanFinished";
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
     reply->deleteLater();
     if (reply->error() != QNetworkReply::NoError) {
@@ -348,21 +299,21 @@ void CommbankService::handleActivateSessionTanFinished() {
     processActivateSessionTanResult(reply->readAll(), reply);
 }
 
-void CommbankService::processActivateSessionTanResult(QByteArray responseData, QNetworkReply *reply) {
+void CommbankLoginService::processActivateSessionTanResult(QByteArray responseData, QNetworkReply *reply) {
     QJsonDocument jsonDocumentBody = QJsonDocument::fromJson(responseData);
     if (!jsonDocumentBody.isObject()) {
       qDebug() << "response body not a json object!";
     }
 
     QString result = QString(responseData);
-    qDebug() << "CommbankService::processActivateSessionTanResult => "
+    qDebug() << "CommbankLoginService::processActivateSessionTanResult => "
              << responseData;
 
     executeCDSecondaryFlow(QUrl(URL_OAUTH_TOKEN));
 }
 
-void CommbankService::executeCDSecondaryFlow(const QUrl &url) {
-    qDebug() << "CommbankService::executeCDSecondaryFlow " << url;
+void CommbankLoginService::executeCDSecondaryFlow(const QUrl &url) {
+    qDebug() << "CommbankLoginService::executeCDSecondaryFlow " << url;
 
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader,
@@ -385,8 +336,8 @@ void CommbankService::executeCDSecondaryFlow(const QUrl &url) {
             SLOT(handleCDSecondaryFlowFinished()));
 }
 
-void CommbankService::handleCDSecondaryFlowFinished() {
-    qDebug() << "CommbankService::handleCDSecondaryFlowFinished";
+void CommbankLoginService::handleCDSecondaryFlowFinished() {
+    qDebug() << "CommbankLoginService::handleCDSecondaryFlowFinished";
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
     reply->deleteLater();
     if (reply->error() != QNetworkReply::NoError) {
@@ -398,14 +349,14 @@ void CommbankService::handleCDSecondaryFlowFinished() {
     processCDSecondaryFlowResult(reply->readAll(), reply);
 }
 
-void CommbankService::processCDSecondaryFlowResult(QByteArray responseData, QNetworkReply *reply) {
+void CommbankLoginService::processCDSecondaryFlowResult(QByteArray responseData, QNetworkReply *reply) {
     QJsonDocument jsonDocument = QJsonDocument::fromJson(responseData);
     if (!jsonDocument.isObject()) {
       qDebug() << "response body not a json object!";
     }
 
     QString result = QString(responseData);
-    qDebug() << "CommbankService::processCDSecondaryFlowResult => "
+    qDebug() << "CommbankLoginService::processCDSecondaryFlowResult => "
              << responseData;
 
     QJsonObject responseObject = jsonDocument.object();
@@ -431,96 +382,10 @@ void CommbankService::processCDSecondaryFlowResult(QByteArray responseData, QNet
     emit challengeResponseAvailable();
 
     // TODO nicht von hier aus aufrufen !!
-    executeGetAccountBalances(QUrl(URL_ACCOUNT_BALANCES));
+    // executeGetAccountBalances(QUrl(URL_ACCOUNT_BALANCES));
 }
 
 
-void CommbankService::executeGetAccountBalances(const QUrl &url) {
-    qDebug() << "CommbankService::executeGetAccountBalances " << url;
 
-    QNetworkRequest request(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, MIME_TYPE_JSON);
-    request.setRawHeader("Accept", MIME_TYPE_JSON);
-    request.setRawHeader("Authorization",
-                         QString("Bearer ").append(sessionContext->getAccessToken()).toUtf8());
-    request.setRawHeader("x-http-request-info", sessionContext->createRequestInfoString().toUtf8());
-
-    QNetworkReply *reply = networkAccessManager->get(request);
-
-    connectErrorSlot(reply);
-    connect(reply, SIGNAL(finished()), this,
-            SLOT(handleGetAccountBalancesFinished()));
-}
-
-void CommbankService::handleGetAccountBalancesFinished() {
-    qDebug() << "CommbankService::handleGetAccountBalancesFinished";
-    QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
-    reply->deleteLater();
-    if (reply->error() != QNetworkReply::NoError) {
-      return;
-    }
-
-    logResponseHeaders(reply);
-
-    processGetAccountBalancesResult(reply->readAll());
-}
-
-void CommbankService::processGetAccountBalancesResult(QByteArray responseData) {
-    QJsonDocument jsonDocumentBody = QJsonDocument::fromJson(responseData);
-    if (!jsonDocumentBody.isObject()) {
-      qDebug() << "response body not a json object!";
-    }
-
-    QString result = QString(responseData);
-    qDebug() << "CommbankService::processGetAccountBalancesResult => "
-             << responseData;
-
-
-
-//    {
-//      "paging": {
-//        "index": 0,
-//        "matches": 1
-//      },
-//      "values": [
-//        {
-//          "account": {
-//            "accountId": "6F91E9A225C74355834F5A0D9A304697",
-//            "accountDisplayId": "977869927400",
-//            "currency": "EUR",
-//            "clientId": "40E61E65146441CEBC3DD7F0C70E7051",
-//            "accountType": {
-//              "key": "SA",
-//              "text": "Verrechnungskonto"
-//            },
-//            "iban": "DE76200411440869927400",
-//            "creditLimit": {
-//              "value": "0",
-//              "unit": "EUR"
-//            }
-//          },
-//          "accountId": "6F91E9A225C74355834F5A0D9A304697",
-//          "balance": {
-//            "value": "4106.31",
-//            "unit": "EUR"
-//          },
-//          "balanceEUR": {
-//            "value": "4106.31",
-//            "unit": "EUR"
-//          },
-//          "availableCashAmount": {
-//            "value": "4106.31",
-//            "unit": "EUR"
-//          },
-//          "availableCashAmountEUR": {
-//            "value": "4106.31",
-//            "unit": "EUR"
-//          }
-//        }
-//      ]
-//    }
-
-    emit challengeResponseAvailable();
-}
 
 

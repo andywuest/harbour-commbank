@@ -14,22 +14,31 @@ TARGET = harbour-commbank
 
 CONFIG += sailfishapp
 
+HEADERS += \
+    src/abstractservice.h \
+    src/commbank.h \
+    src/commbankaccountservice.h \
+    src/commbankloginservice.h \
+    src/constants.h \
+    src/credentials.h \
+    src/sessioncontext.h
+
 SOURCES += src/harbour-commbank.cpp \
-    src/commbankservice.cpp \
+    src/abstractservice.cpp \
+    src/commbank.cpp \
+    src/commbankaccountservice.cpp \
+    src/commbankloginservice.cpp \
     src/sessioncontext.cpp
 
 DEFINES += VERSION_NUMBER=\\\"$$(VERSION_NUMBER)\\\"
 
 DISTFILES += qml/harbour-commbank.qml \
-    qml/components/thirdparty/LoadingIndicator.qml \
     qml/cover/CoverPage.qml \
-    qml/js/credentials.js \
-    qml/pages/AccountOverviewPage.qml \
-    qml/pages/FirstPage.qml \
-    qml/pages/LoginPage.qml \
     qml/pages/CredentialsPage.qml \
     qml/pages/SecondFactorLoginPage.qml \
-    qml/pages/SecondPage.qml \
+    qml/pages/AccountOverviewPage.qml \
+    qml/components/thirdparty/LoadingIndicator.qml \
+    qml/js/credentials.js \
     rpm/harbour-commbank.changes.in \
     rpm/harbour-commbank.changes.run.in \
     rpm/harbour-commbank.spec \
@@ -48,9 +57,3 @@ CONFIG += sailfishapp_i18n
 # following TRANSLATIONS line. And also do not forget to
 # modify the localized app name in the the .desktop file.
 TRANSLATIONS += translations/harbour-commbank-de.ts
-
-HEADERS += \
-    src/commbankservice.h \
-    src/constants.h \
-    src/credentials.h \
-    src/sessioncontext.h
