@@ -15,7 +15,8 @@ TARGET = harbour-commbank
 CONFIG += sailfishapp
 
 SOURCES += src/harbour-commbank.cpp \
-    src/commbankservice.cpp
+    src/commbankservice.cpp \
+    src/sessioncontext.cpp
 
 DEFINES += VERSION_NUMBER=\\\"$$(VERSION_NUMBER)\\\"
 
@@ -51,4 +52,5 @@ TRANSLATIONS += translations/harbour-commbank-de.ts
 HEADERS += \
     src/commbankservice.h \
     src/constants.h \
-    src/credentials.h
+    src/credentials.h \
+    src/sessioncontext.h

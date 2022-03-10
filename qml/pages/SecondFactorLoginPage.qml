@@ -3,8 +3,6 @@ import Sailfish.Silica 1.0
 
 import "../components/thirdparty"
 
-import "../js/credentials.js" as Credentials
-
 Page {
     id: credentialsPage
     allowedOrientations: Orientation.All
@@ -28,7 +26,11 @@ Page {
 
     function challengeResultHandler(result) {
         // TODO move to 2FA page
+        console.log("[SecondFactorLoginPage] challenge success received");
         loading = false;
+        disconnectSlots();
+        pageStack.clear();
+        pageStack.push(Qt.resolvedUrl("AccountOverviewPage.qml"));
     }
 
     function errorResultHandler(result) {

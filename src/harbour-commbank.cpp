@@ -23,7 +23,11 @@ int main(int argc, char *argv[]) {
   QScopedPointer<QQuickView> view(SailfishApp::createView());
 
   QQmlContext *context = view.data()->rootContext();
+
+  SessionContext sessionContext;
+
   CommbankService commbankService;
+  commbankService.setSessionContext(&sessionContext);
   context->setContextProperty("commbankService", &commbankService);
 
   context->setContextProperty("applicationVersion", QString(VERSION_NUMBER));

@@ -8,6 +8,8 @@
 #include <QSettings>
 #include <QUrlQuery>
 
+#include "sessioncontext.h"
+
 class CommbankService : public QObject {
   Q_OBJECT
 
@@ -23,6 +25,8 @@ public:
   Q_SIGNAL void challengeResponseAvailable();
   Q_SIGNAL void requestError(const QString &errorMessage);
 
+  void setSessionContext(SessionContext *sessionContext);
+
 signals:
 
 public slots:
@@ -31,20 +35,13 @@ private:
   QNetworkAccessManager *networkAccessManager;
   QNetworkConfigurationManager *const networkConfigurationManager;
 
+  SessionContext *sessionContext;
+
   QSettings settings;
 
-  QString accessTokenLogin; // accessToken when logging in
-  QString refreshTokenLogin; // refreshToken when logging in
-  QString accessToken;   // accessToken after complete 2FA login
-  QString refreshToken;  // refreshToken after complete 2FA login
-  QString sessionId;
-  QString requestId;
   QString identifier;
   QString challengeId;
   QString challengeType;
-
-  QString createRequestId();
-  QString createSessionId();
 
   void connectErrorSlot(QNetworkReply *reply);
 

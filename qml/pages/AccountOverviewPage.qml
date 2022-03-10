@@ -1,6 +1,8 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 
+import "../components/thirdparty"
+
 Page {
 
     SilicaFlickable {
@@ -147,6 +149,18 @@ Page {
 
         }
 
+    }
+
+    LoadingIndicator {
+        id: loginLoadingIndicator
+        visible: loading
+        Behavior on opacity {
+            NumberAnimation {
+            }
+        }
+        opacity: loading ? 1 : 0
+        height: parent.height
+        width: parent.width
     }
 
 }
