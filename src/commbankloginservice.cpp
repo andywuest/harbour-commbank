@@ -39,12 +39,35 @@ void CommbankLoginService::executeResourceOwnerPasswordCredentialsFlow(
   postData.addQueryItem("username", username);
   postData.addQueryItem("password", password);
 
-  QNetworkReply *reply =
-      networkAccessManager->post(request, postData.toString().toUtf8());
 
-  connectErrorSlot(reply);
-  connect(reply, SIGNAL(finished()), this,
-          SLOT(handleExecuteResourceOwnerPasswordCredentialsFlowFinished()));
+  QJsonObject accountData1;
+  accountData1.insert("name", "the name 1");
+  accountData1.insert("client_id", clientId);
+  accountData1.insert("client_secret", clientSecret);
+  accountData1.insert("username", username);
+
+  QJsonObject accountData2;
+  accountData2.insert("name", "the name 2");
+  accountData2.insert("client_id", clientId + "2");
+  accountData2.insert("client_secret", clientSecret + "2");
+  accountData2.insert("username", username + "2");
+
+  qDebug() << "account names : " << accountStorageService->loadAllAccountNames();
+  accountStorageService->resetAccounts();
+  accountStorageService->storeAccountCredentials(accountData1);
+  qDebug() << "loaded result : " << accountStorageService->loadAccountCredentials(username);
+
+  accountStorageService->storeAccountCredentials(accountData2);
+  qDebug() << "loaded result : " << accountStorageService->loadAccountCredentials(username);
+//  qDebug() << "loaded result : " << accountStorageService->loadAccountCredentials("the name");
+
+
+//  QNetworkReply *reply =
+//      networkAccessManager->post(request, postData.toString().toUtf8());
+
+//  connectErrorSlot(reply);
+//  connect(reply, SIGNAL(finished()), this,
+//          SLOT(handleExecuteResourceOwnerPasswordCredentialsFlowFinished()));
 }
 
 void CommbankLoginService::

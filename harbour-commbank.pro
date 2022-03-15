@@ -12,10 +12,11 @@
 # The name of your application
 TARGET = harbour-commbank
 
-CONFIG += sailfishapp
+CONFIG += link_pkgconfig sailfishapp
 
 HEADERS += \
     src/abstractservice.h \
+    src/accountstorageservice.h \
     src/commbank.h \
     src/commbankaccountservice.h \
     src/commbankloginservice.h \
@@ -25,12 +26,16 @@ HEADERS += \
 
 SOURCES += src/harbour-commbank.cpp \
     src/abstractservice.cpp \
+    src/accountstorageservice.cpp \
     src/commbank.cpp \
     src/commbankaccountservice.cpp \
     src/commbankloginservice.cpp \
     src/sessioncontext.cpp
 
 DEFINES += VERSION_NUMBER=\\\"$$(VERSION_NUMBER)\\\"
+
+PKGCONFIG += \
+    sailfishsecrets
 
 DISTFILES += qml/harbour-commbank.qml \
     qml/cover/CoverPage.qml \

@@ -8,6 +8,7 @@
 
 #include "commbankaccountservice.h"
 #include "commbankloginservice.h"
+#include "accountstorageservice.h"
 
 class Commbank : public QObject
 {
@@ -18,6 +19,7 @@ public:
 
     CommbankAccountService *getCommbankAccountService();
     CommbankLoginService *getCommbankLoginService();
+    AccountStorageService *getAccountStorageService();
 
 private:
     QNetworkAccessManager *const networkAccessManager;
@@ -25,6 +27,8 @@ private:
 
     CommbankLoginService *commbankLoginService;
     CommbankAccountService *commbankAccountService;
+
+    AccountStorageService *accountStorageService;
 
     QSettings settings;
     SessionContext sessionContext;

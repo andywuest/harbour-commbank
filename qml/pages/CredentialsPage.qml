@@ -16,6 +16,7 @@ Page {
         // var dataBackend = getSecurityDataBackend(watchlistSettings.dataBackend);
         commbankLoginService.loginResultAvailable.connect(loginResultHandler);
         commbankLoginService.requestError.connect(errorResultHandler);
+        accountStorageService.savedAccountDataAvailable.connect(savedAccountDataHandler);
     }
 
     function disconnectSlots() {
@@ -23,6 +24,10 @@ Page {
         // var dataBackend = getSecurityDataBackend(watchlistSettings.dataBackend);
         commbankLoginService.loginResultAvailable.disconnect(loginResultHandler);
         commbankLoginService.requestError.disconnect(errorResultHandler);
+    }
+
+    function savedAccountDataHandler(accountNames) {
+        console.log("[LoginPage] account names - " + accountNames);
     }
 
     function loginResultHandler(challenge, challengeType) {
@@ -98,7 +103,7 @@ Page {
                           && usernameTextField.text !== "" && passwordField.text !== "")
                 onClicked: {
                     console.log("[CredentialsPage] login button clicked");
-                    loading = true;
+                    loading = false;
                     errorInfoLabel.visible = false;
                     errorDetailInfoLabel.text = "";
                     commbankLoginService.performLogin(clientIdTextField.text, clientSecretTextField.text
@@ -153,6 +158,8 @@ Page {
         passwordField.text = Credentials.password;
 
         connectSlots();
+
+        accountStorageService.loadSavedAccountData();
     }
 
     LoadingIndicator {

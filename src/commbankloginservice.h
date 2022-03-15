@@ -10,6 +10,7 @@
 
 #include "abstractservice.h"
 #include "sessioncontext.h"
+#include "accountstorageservice.h"
 
 class CommbankLoginService :public AbstractService {
   Q_OBJECT
@@ -25,6 +26,8 @@ public:
   Q_SIGNAL void loginResultAvailable(const QString &challenge,
                                      const QString &challengeType);
   Q_SIGNAL void challengeResponseAvailable();
+
+  AccountStorageService *accountStorageService;
 
 signals:
 
