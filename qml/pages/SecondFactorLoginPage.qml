@@ -28,6 +28,10 @@ Page {
         // TODO move to 2FA page
         console.log("[SecondFactorLoginPage] challenge success received");
         loading = false;
+
+
+        // TODO accounts laden
+        // TODO nachdem laden der accounts fragen, ob man die credentialsspeichern will, oder nicht
         disconnectSlots();
         pageStack.clear();
         pageStack.push(Qt.resolvedUrl("AccountOverviewPage.qml"));

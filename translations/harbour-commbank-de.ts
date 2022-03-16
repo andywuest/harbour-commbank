@@ -49,11 +49,42 @@
         <source>Unable to login to comdirect account. Please check the following error messages.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Clear</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LoadingIndicator</name>
     <message>
         <source>Loading...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LoginPage</name>
+    <message>
+        <source>Show Page 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>UI Template</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Login Page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Send Challenge</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -97,6 +128,25 @@
     </message>
     <message>
         <source>Please clear the login request within your mobile phone application before you continue.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>StoreCredentialsDialog</name>
+    <message>
+        <source>Store credentials</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name for the credentials</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Account credentials name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please provide the name under which you want to store the credentials for the username &apos;%1&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

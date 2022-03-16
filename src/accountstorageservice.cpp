@@ -156,57 +156,12 @@ QJsonObject AccountStorageService::loadAccountCredentials(const QString &userNam
 
     QJsonObject empty;
     return empty;
-
-//    auto fetchCode = new Sailfish::Secrets::StoredSecretRequest;
-
-//    fetchCode->setManager(&secretManager);
-//    fetchCode->setUserInteractionMode(Sailfish::Secrets::SecretManager::SystemInteraction);
-//    fetchCode->setIdentifier(secretsIdentifier);
-
-//    fetchCode->startRequest();
-//    fetchCode->waitForFinished();
-
-//    qDebug() << QStringLiteral("Account loaded");
-//    qDebug() << fetchCode->result().code();
-//    qDebug() << fetchCode->result().errorCode();
-//    qDebug() << fetchCode->result().errorMessage();
-
-//    if (fetchCode->result().code() != Sailfish::Secrets::Result::Succeeded) {
-//        QJsonObject emptyObject;
-//        return emptyObject;
-//    }
-
-//    QByteArray data = fetchCode->secret().data();
-//    QJsonDocument document = QJsonDocument::fromJson(data);
-
-//    qDebug() << "loaded account data : " << QString::fromUtf8(data);
-
-//    fetchCode->deleteLater();
-
-//    return document.object();
-//    // emit credentialsChanged(m_credentials);
 }
 
 QJsonDocument AccountStorageService::loadAllAccountNames() {
         qDebug() << "AccountStorageService::loadAllAccountNames";
-
-        QJsonObject accountCredentials = loadAccountCredentials();
-
-        QStringList userNameList = accountCredentials.keys();
-
-        QMap<QString, QString> userNameToNameMap;
-
-        QJsonArray resultArray;
-
-        for (int i = 0; i < userNameList.size(); i++) {
-            QString key = userNameList.at(i);
-            QJsonObject entry;
-            entry.insert(key, accountCredentials[key].toObject()["name"].toString());
-            resultArray.push_back(entry);
-        }
-
         QJsonDocument document;
-        document.setArray(resultArray);
+        document.setObject(loadAccountCredentials());
         return document;
 }
 

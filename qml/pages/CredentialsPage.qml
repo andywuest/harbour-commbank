@@ -9,40 +9,67 @@ Page {
     id: credentialsPage
     allowedOrientations: Orientation.All
 
-    property bool loading : false
+    property bool loading: false
 
     function connectSlots() {
-        console.log("[LoginPage] connect - slots");
+        console.log("[CredentialsPage] connect - slots")
         // var dataBackend = getSecurityDataBackend(watchlistSettings.dataBackend);
-        commbankLoginService.loginResultAvailable.connect(loginResultHandler);
-        commbankLoginService.requestError.connect(errorResultHandler);
-        accountStorageService.savedAccountDataAvailable.connect(savedAccountDataHandler);
+        commbankLoginService.loginResultAvailable.connect(loginResultHandler)
+        commbankLoginService.requestError.connect(errorResultHandler)
+        accountStorageService.savedAccountDataAvailable.connect(
+                    savedAccountDataHandler)
     }
 
     function disconnectSlots() {
-        console.log("[LoginPage] disconnect - slots");
+        console.log("[CredentialsPage] disconnect - slots")
         // var dataBackend = getSecurityDataBackend(watchlistSettings.dataBackend);
-        commbankLoginService.loginResultAvailable.disconnect(loginResultHandler);
-        commbankLoginService.requestError.disconnect(errorResultHandler);
+        commbankLoginService.loginResultAvailable.disconnect(loginResultHandler)
+        commbankLoginService.requestError.disconnect(errorResultHandler)
     }
 
     function savedAccountDataHandler(accountNames) {
-        console.log("[LoginPage] account names - " + accountNames);
+        console.log("[CredentialsPage] account names - " + accountNames)
+        var accountNamesResponse = JSON.parse(accountNames)
+        if (accountNamesResponse) {
+            for (var key in accountNamesResponse) {
+                if (accountNamesResponse.hasOwnProperty(key)) {
+                    console.log(key + " -> " + accountNamesResponse[key])
+                    pullDownMenuModel.append(accountNamesResponse[key])
+                }
+            }
+        }
+    }
+
+    function populateInputFieldsWithLoadedCredentials(model) {
+        clientIdTextField.text = model.client_id
+        clientSecretTextField.text = model.client_secret
+        usernameTextField.text = model.name
+        passwordField.text = ""
+    }
+
+    function clearInputFields() {
+        clientIdTextField.text = ""
+        clientSecretTextField.text = ""
+        usernameTextField.text = ""
+        passwordField.text = ""
     }
 
     function loginResultHandler(challenge, challengeType) {
-        console.log("[LoginPage] success received - " + challenge + ", " + challengeType);
-        loading = false;
-        disconnectSlots();
-        pageStack.clear();
-        pageStack.push(Qt.resolvedUrl("SecondFactorLoginPage.qml"), { challenge: challenge, challengeType: challengeType });
+        console.log("[CredentialsPage] success received - " + challenge + ", " + challengeType)
+        loading = false
+        disconnectSlots()
+        pageStack.clear()
+        pageStack.push(Qt.resolvedUrl("SecondFactorLoginPage.qml"), {
+                           "challenge": challenge,
+                           "challengeType": challengeType
+                       })
     }
 
     function errorResultHandler(result) {
-        console.log("[LoginPage] error received - " + result);
-        errorInfoLabel.visible = true;
-        errorDetailInfoLabel.text = result;
-        loading = false;
+        console.log("[CredentialsPage] error received - " + result)
+        errorInfoLabel.visible = true
+        errorDetailInfoLabel.text = result
+        loading = false
     }
 
     SilicaFlickable {
@@ -50,6 +77,20 @@ Page {
         anchors.fill: parent
         contentWidth: parent.width
         contentHeight: credentialsColumn.height
+
+        ListModel {
+            id: pullDownMenuModel
+        }
+
+        PullDownMenu {
+            Repeater {
+                model: pullDownMenuModel
+                MenuItem {
+                    text: qsTr("Load %1").arg(model.name)
+                    onClicked: populateInputFieldsWithLoadedCredentials(model)
+                }
+            }
+        }
 
         Column {
             id: credentialsColumn
@@ -99,30 +140,54 @@ Page {
                 anchors {
                     horizontalCenter: parent.horizontalCenter
                 }
-                enabled: ( clientIdTextField.text !== "" && clientSecretTextField.text !== ""
-                          && usernameTextField.text !== "" && passwordField.text !== "")
+                enabled: (clientIdTextField.text !== ""
+                          && clientSecretTextField.text !== ""
+                          && usernameTextField.text !== ""
+                          && passwordField.text !== "")
                 onClicked: {
-                    console.log("[CredentialsPage] login button clicked");
-                    loading = false;
-                    errorInfoLabel.visible = false;
-                    errorDetailInfoLabel.text = "";
-                    commbankLoginService.performLogin(clientIdTextField.text, clientSecretTextField.text
-                                                 , usernameTextField.text, passwordField.text);
+                    console.log("[CredentialsPage] login button clicked")
+                    loading = true
+                    errorInfoLabel.visible = false
+                    errorDetailInfoLabel.text = ""
+                    commbankLoginService.performLogin(
+                                clientIdTextField.text,
+                                clientSecretTextField.text,
+                                usernameTextField.text, passwordField.text)
                 }
             }
 
+            Button {
+                id: clearButton
+                text: qsTr("Clear")
+                anchors {
+                    horizontalCenter: parent.horizontalCenter
+                }
+                onClicked: clearInputFields()
+            }
+
+
+// TODO this logic has to be called after a successful second factor login
 //            Button {
-//                id: abortButton
-//                text: qsTr("Abort")
+//                id: todoRemove
+//                text: qsTr("Store credentials")
 //                anchors {
 //                    horizontalCenter: parent.horizontalCenter
 //                }
 //                onClicked: {
-//                    finTsAccounts.removeCurrentAccount();
-//                    pageStack.clear();
-//                    pageStack.push(finTsDialog.isInitialized() ? Qt.resolvedUrl("OverviewPage.qml") : Qt.resolvedUrl("InstitutesSearchPage.qml"));
+//                    var dialog = pageStack.push(Qt.resolvedUrl("StoreCredentialsDialog.qml"),
+//                                                                     {
+//                                                    "clientId": clientIdTextField.text,
+//                                                    "clientSecret": clientSecretTextField.text,
+//                                                    "username": usernameTextField.text
+//                                                }
+//                                                )
+//                    dialog.accepted.connect(function() {
+//                                             console.log("Credentials name: " + dialog.name)
+//                                         })
 //                }
 //            }
+
+
 
             Label {
                 id: separatorLabel
@@ -146,20 +211,12 @@ Page {
                 font.pixelSize: Theme.fontSizeMedium
                 text: ""
             }
-
         }
-
     }
 
     Component.onCompleted: {
-        clientIdTextField.text = Credentials.clientId;
-        clientSecretTextField.text = Credentials.clientSecret;
-        usernameTextField.text = Credentials.username;
-        passwordField.text = Credentials.password;
-
-        connectSlots();
-
-        accountStorageService.loadSavedAccountData();
+        connectSlots()
+        accountStorageService.loadSavedAccountData()
     }
 
     LoadingIndicator {
@@ -173,5 +230,4 @@ Page {
         height: parent.height
         width: parent.width
     }
-
 }
