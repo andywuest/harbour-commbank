@@ -6,32 +6,31 @@
 #include <QObject>
 #include <QSettings>
 
+#include "accountstorageservice.h"
 #include "commbankaccountservice.h"
 #include "commbankloginservice.h"
-#include "accountstorageservice.h"
 
-class Commbank : public QObject
-{
-    Q_OBJECT
+class Commbank : public QObject {
+  Q_OBJECT
 public:
-    explicit Commbank(QObject *parent = nullptr);
-    ~Commbank() = default;
+  explicit Commbank(QObject *parent = nullptr);
+  ~Commbank() = default;
 
-    CommbankAccountService *getCommbankAccountService();
-    CommbankLoginService *getCommbankLoginService();
-    AccountStorageService *getAccountStorageService();
+  CommbankAccountService *getCommbankAccountService();
+  CommbankLoginService *getCommbankLoginService();
+  AccountStorageService *getAccountStorageService();
 
 private:
-    QNetworkAccessManager *const networkAccessManager;
-    QNetworkConfigurationManager *const networkConfigurationManager;
+  QNetworkAccessManager *const networkAccessManager;
+  QNetworkConfigurationManager *const networkConfigurationManager;
 
-    CommbankLoginService *commbankLoginService;
-    CommbankAccountService *commbankAccountService;
+  CommbankLoginService *commbankLoginService;
+  CommbankAccountService *commbankAccountService;
 
-    AccountStorageService *accountStorageService;
+  AccountStorageService *accountStorageService;
 
-    QSettings settings;
-    SessionContext sessionContext;
+  QSettings settings;
+  SessionContext sessionContext;
 };
 
 #endif // COMMBANK_H

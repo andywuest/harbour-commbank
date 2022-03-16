@@ -1,7 +1,7 @@
 #include "sessioncontext.h"
 
-#include <QUuid>
 #include <QDateTime>
+#include <QUuid>
 #include <QtCore/qdebug.h>
 
 QString SessionContext::createRequestId() {
@@ -18,50 +18,41 @@ QString SessionContext::createSessionId() {
 }
 
 QString SessionContext::createRequestInfoString() {
-    if (requestId.isEmpty()) {
-        this->requestId = createRequestId();
-    }
-    if (sessionId.isEmpty()) {
-        this->sessionId = createSessionId();
-    }
+  if (requestId.isEmpty()) {
+    this->requestId = createRequestId();
+  }
+  if (sessionId.isEmpty()) {
+    this->sessionId = createSessionId();
+  }
 
-    qDebug() << "SessionContext::sessionId : " << this->sessionId;
-    qDebug() << "SessionContext::requestId : " << this->requestId;
+  qDebug() << "SessionContext::sessionId : " << this->sessionId;
+  qDebug() << "SessionContext::requestId : " << this->requestId;
 
-    return QString("{\"clientRequestId\":{\"sessionId\":\"{{%1}}\",\"requestId\":\"{{%2}}\"}}")
-                                    .arg(this->sessionId, this->requestId);
+  return QString("{\"clientRequestId\":{\"sessionId\":\"{{%1}}\",\"requestId\":"
+                 "\"{{%2}}\"}}")
+      .arg(this->sessionId, this->requestId);
 }
 
-QString SessionContext::getAccessTokenLogin() {
-    return accessTokenLogin;
-}
+QString SessionContext::getAccessTokenLogin() { return accessTokenLogin; }
 
 void SessionContext::setAccessTokenLogin(const QString &accessTokenLogin) {
-    this->accessTokenLogin = accessTokenLogin;
+  this->accessTokenLogin = accessTokenLogin;
 }
 
-QString SessionContext::getAccessToken() {
-    return accessToken;
-}
+QString SessionContext::getAccessToken() { return accessToken; }
 
 void SessionContext::setAccessToken(const QString &accessToken) {
-    this->accessToken = accessToken;
+  this->accessToken = accessToken;
 }
 
-QString SessionContext::getRefreshTokenLogin() {
-    return refreshTokenLogin;
-}
+QString SessionContext::getRefreshTokenLogin() { return refreshTokenLogin; }
 
 void SessionContext::setRefreshTokenLogin(const QString &refreshTokenLogin) {
-    this->refreshTokenLogin = refreshTokenLogin;
+  this->refreshTokenLogin = refreshTokenLogin;
 }
 
-QString SessionContext::getRefreshToken() {
-    return refreshToken;
-}
+QString SessionContext::getRefreshToken() { return refreshToken; }
 
 void SessionContext::setRefreshToken(const QString &refreshToken) {
-    this->refreshToken = refreshToken;
+  this->refreshToken = refreshToken;
 }
-
-

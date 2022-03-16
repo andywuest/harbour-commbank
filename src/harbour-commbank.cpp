@@ -2,12 +2,12 @@
 #include <QtQuick>
 #endif
 
-#include <sailfishapp.h>
 #include <QGuiApplication>
 #include <QQmlContext>
 #include <QQuickView>
 #include <QScopedPointer>
 #include <QtQml>
+#include <sailfishapp.h>
 
 #include "commbank.h"
 
@@ -20,13 +20,16 @@ int main(int argc, char *argv[]) {
   Commbank commbank;
   context->setContextProperty("commbank", &commbank);
 
-  CommbankLoginService *commbankLoginService = commbank.getCommbankLoginService();
+  CommbankLoginService *commbankLoginService =
+      commbank.getCommbankLoginService();
   context->setContextProperty("commbankLoginService", commbankLoginService);
 
-  CommbankAccountService *commbankAccountService = commbank.getCommbankAccountService();
+  CommbankAccountService *commbankAccountService =
+      commbank.getCommbankAccountService();
   context->setContextProperty("commbankAccountService", commbankAccountService);
 
-  AccountStorageService *accountStorageService = commbank.getAccountStorageService();
+  AccountStorageService *accountStorageService =
+      commbank.getAccountStorageService();
   context->setContextProperty("accountStorageService", accountStorageService);
 
   context->setContextProperty("applicationVersion", QString(VERSION_NUMBER));

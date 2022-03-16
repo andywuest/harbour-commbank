@@ -1,19 +1,20 @@
 #include "abstractservice.h"
 
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QJsonArray>
 
-AbstractService::AbstractService(QNetworkAccessManager *networkAccessManager, QObject *parent,
+AbstractService::AbstractService(QNetworkAccessManager *networkAccessManager,
+                                 QObject *parent,
                                  SessionContext *sessionContext)
     : QObject(parent) {
-    qDebug() << "Initializing AbstractService...";
-    this->networkAccessManager = networkAccessManager;
-    this->sessionContext = sessionContext;
+  qDebug() << "Initializing AbstractService...";
+  this->networkAccessManager = networkAccessManager;
+  this->sessionContext = sessionContext;
 }
 
 AbstractService::~AbstractService() {
-    qDebug() << "Shutting down AbstractService...";
+  qDebug() << "Shutting down AbstractService...";
 }
 
 void AbstractService::logResponseHeaders(QNetworkReply *reply) {
@@ -43,15 +44,16 @@ void AbstractService::connectErrorSlot(QNetworkReply *reply) {
 
               // responses do not always look the same
               if (!responseObject["error_description"].toString().isEmpty()) {
-                  QString errorDescription =
-                      responseObject["error_description"].toString();
-                  qWarning() << "error description : " << errorDescription;
-                  emit requestError(errorDescription);
+                QString errorDescription =
+                    responseObject["error_description"].toString();
+                qWarning() << "error description : " << errorDescription;
+                emit requestError(errorDescription);
               } else if (!responseObject["messages"].toArray().isEmpty()) {
-                  QJsonArray messageArray = responseObject["messages"].toArray();
-                  QString errorDescription = messageArray.at(0).toObject()["message"].toString();
-                  qWarning() << "error description : " << errorDescription;
-                  emit requestError(errorDescription);
+                QJsonArray messageArray = responseObject["messages"].toArray();
+                QString errorDescription =
+                    messageArray.at(0).toObject()["message"].toString();
+                qWarning() << "error description : " << errorDescription;
+                emit requestError(errorDescription);
               }
             } else {
               emit requestError(
