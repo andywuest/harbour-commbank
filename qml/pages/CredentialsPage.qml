@@ -10,6 +10,7 @@ Page {
     allowedOrientations: Orientation.All
 
     property bool loading: false
+    property var knownUsernames: []
 
     function connectSlots() {
         console.log("[CredentialsPage] connect - slots")
@@ -35,9 +36,19 @@ Page {
                 if (accountNamesResponse.hasOwnProperty(key)) {
                     console.log(key + " -> " + accountNamesResponse[key])
                     pullDownMenuModel.append(accountNamesResponse[key])
+                    knownUsernames.push(accountNamesResponse[key]["username"]);
                 }
             }
         }
+    }
+
+    function isKnownUsername(loginUsername) {
+        for (var i = 0; i < knownUsernames.length; i++) {
+            if (knownUsernames[i] === loginUsername) {
+                return true;
+            }
+        }
+        return false;
     }
 
     function populateInputFieldsWithLoadedCredentials(model) {
@@ -57,12 +68,16 @@ Page {
     function loginResultHandler(challenge, challengeType) {
         console.log("[CredentialsPage] success received - " + challenge + ", " + challengeType)
         loading = false
-        disconnectSlots()
-        pageStack.clear()
+        disconnectSlots();
+        pageStack.clear();
         pageStack.push(Qt.resolvedUrl("SecondFactorLoginPage.qml"), {
+                           "usernameKnown": isKnownUsername(usernameTextField.text),
                            "challenge": challenge,
-                           "challengeType": challengeType
-                       })
+                           "challengeType": challengeType,
+                           "clientId": clientIdTextField.text,
+                           "clientSecret": clientSecretTextField.text,
+                           "username": usernameTextField.text
+                       });
     }
 
     function errorResultHandler(result) {

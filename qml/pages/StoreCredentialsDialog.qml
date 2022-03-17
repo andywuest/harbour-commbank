@@ -5,8 +5,6 @@ Dialog {
     id: storeCredentialsDialog
 
     property string name
-    property string clientId
-    property string clientSecret
     property string username
 
     Column {

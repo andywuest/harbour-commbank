@@ -7,38 +7,39 @@ Page {
     id: overviewPage
 
     property bool loading : false
+    property var accountBalances
 
     function connectSlots() {
         console.log("[AccountOverviewPage] connect - slots");
-        commbankAccountService.allBalancesResultAvailable.connect(allBalancesResultHandler);
-        commbankAccountService.requestError.connect(errorResultHandler);
+        //commbankAccountService.allBalancesResultAvailable.connect(allBalancesResultHandler);
+        //commbankAccountService.requestError.connect(errorResultHandler);
     }
 
     function disconnectSlots() {
         console.log("[AccountOverviewPage] disconnect - slots");
-        commbankAccountService.allBalancesResultAvailable.disconnect(allBalancesResultHandler);
-        commbankAccountService.requestError.disconnect(errorResultHandler);
+        //commbankAccountService.allBalancesResultAvailable.disconnect(allBalancesResultHandler);
+        //commbankAccountService.requestError.disconnect(errorResultHandler);
     }
 
     function allBalancesResultHandler(result) {
-        // TODO move to 2FA page
-        console.log("[AccountOverviewPage] balances received : " + result);
-        loading = false;
+//        // TODO move to 2FA page
+//        console.log("[AccountOverviewPage] balances received : " + result);
+//        loading = false;
 
-        var accounts = JSON.parse(result);
+//        var accounts = JSON.parse(result);
 
-        for (var i = 0; i < accounts.length; i++) {
-            accountsModel.append(accounts[i])
-        }
+//        for (var i = 0; i < accounts.length; i++) {
+//            accountsModel.append(accounts[i])
+//        }
 
-        overviewFlickable.visible = true;
+//        overviewFlickable.visible = true;
     }
 
     function errorResultHandler(result) {
-        console.log("[AccountOverviewPage] error received - " + result);
-        errorInfoLabel.visible = true;
-        errorDetailInfoLabel.text = result;
-        loading = false;
+//        console.log("[AccountOverviewPage] error received - " + result);
+//        errorInfoLabel.visible = true;
+//        errorDetailInfoLabel.text = result;
+//        loading = false;
     }
 
     SilicaFlickable {
@@ -193,9 +194,16 @@ Page {
     }
 
     Component.onCompleted: {
-        connectSlots();
-        loading = true;
-        commbankAccountService.getAllBalances();
+        if (accountBalances) {
+            for (var i = 0; i < accountBalances.length; i++) {
+                accountsModel.append(accountBalances[i])
+            }
+            overviewFlickable.visible = true;
+        }
+
+        // connectSlots();
+        // loading = true;
+        // commbankAccountService.getAllBalances();
         // TODO trigger loader of accounts
     }
 

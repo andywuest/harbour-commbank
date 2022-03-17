@@ -7,34 +7,73 @@ Page {
     id: credentialsPage
     allowedOrientations: Orientation.All
 
+    property bool usernameKnown
     property string challenge
     property string challengeType
+    property string clientId
+    property string clientSecret
+    property string username
 
     property bool loading : false
 
     function connectSlots() {
         console.log("[SecondFactorLoginPage] connect - slots");
+        // login service
         commbankLoginService.challengeResponseAvailable.connect(challengeResultHandler);
         commbankLoginService.requestError.connect(errorResultHandler);
+        // account service
+        commbankAccountService.allBalancesResultAvailable.connect(allBalancesResultHandler);
+        commbankAccountService.requestError.connect(errorResultHandler);
     }
 
     function disconnectSlots() {
         console.log("[SecondFactorLoginPage] disconnect - slots");
+        // login service
         commbankLoginService.challengeResponseAvailable.disconnect(challengeResultHandler);
         commbankLoginService.requestError.disconnect(errorResultHandler);
+        // account service
+        commbankAccountService.allBalancesResultAvailable.disconnect(allBalancesResultHandler);
+        commbankAccountService.requestError.disconnect(errorResultHandler);
     }
 
     function challengeResultHandler(result) {
-        // TODO move to 2FA page
         console.log("[SecondFactorLoginPage] challenge success received");
+        console.log("[SecondFactorLoginPage] start loading balances");
+
+        // TODO getAllBalances sollte auch Depots liefern
+        commbankAccountService.getAllBalances();
+    }
+
+    function allBalancesResultHandler(result) {
+        console.log("[SecondFactorLoginPage] balances received : " + result);
+        var accountBalances = JSON.parse(result);
         loading = false;
 
+        if (usernameKnown) {
+            navigateToBalancesPage(accountBalances);
+        } else {
+            var dialog = pageStack.push(Qt.resolvedUrl("StoreCredentialsDialog.qml"), {
+                                            "username": username
+                                        }
+                                        );
+            dialog.accepted.connect(function() {
+                console.log("[SecondFactorLoginPage] storing credentials data under name : " + dialog.name);
+                // TODO actually call the storing method
+                navigateToBalancesPage(accountBalances);
+            });
+            dialog.rejected.connect(function () {
+                console.log("[SecondFactorLoginPage] not storing credentials data ");
+                navigateToBalancesPage(accountBalances);
+            });
+        }
+    }
 
-        // TODO accounts laden
-        // TODO nachdem laden der accounts fragen, ob man die credentialsspeichern will, oder nicht
+    function navigateToBalancesPage(accountBalances) {
         disconnectSlots();
         pageStack.clear();
-        pageStack.push(Qt.resolvedUrl("AccountOverviewPage.qml"));
+        pageStack.push(Qt.resolvedUrl("AccountOverviewPage.qml"), {
+                        "accountBalances" : accountBalances
+                       });
     }
 
     function errorResultHandler(result) {
@@ -122,6 +161,7 @@ Page {
 
     Component.onCompleted: {
         connectSlots();
+        console.log("[SecondFactorLoginPage] usernameKnown = " + usernameKnown);
         var sectionHeaderText = "";
         if (challengeType === "P_TAN") {
             challengeTextField.visible = true;
