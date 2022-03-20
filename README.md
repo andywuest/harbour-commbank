@@ -39,6 +39,7 @@ Currently the following features are implemented.
 - No icon so far
 - Proper translation
 - UI needs to be improved
+- Credential data is overwritten if created with same values / no duplicate check
 - No transactions - transfering money or buying / selling securites is not on the roadmap (but i am open for pull requests)
 
 
