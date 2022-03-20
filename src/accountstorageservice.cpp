@@ -42,7 +42,10 @@ void AccountStorageService::loadSavedAccountData() {
   emit savedAccountDataAvailable(resultString);
 }
 
-void AccountStorageService::resetAccounts() { deleteCollection(); }
+void AccountStorageService::deleteAllAccountData() {
+    qDebug() << "AccountStorageService::deleteAllAccountData";
+    deleteCollection();
+}
 
 void AccountStorageService::createCollection() {
   qDebug() << "AccountStorageService::createCollection";
@@ -125,6 +128,7 @@ void AccountStorageService::storeAccountCredentials(
 
   if (storeCode.result().errorCode()) {
     error = AccountStorageError::ErrorStoringAccountData;
+    emit requestError("Error Account credential data"); // TODO use enum to dertermine string
   }
 
   qDebug() << storeCode.result().code();

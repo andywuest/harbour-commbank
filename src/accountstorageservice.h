@@ -36,10 +36,11 @@ public:
   ~AccountStorageService() = default;
 
   Q_INVOKABLE void loadSavedAccountData();
+  Q_INVOKABLE void deleteAllAccountData();
+  Q_INVOKABLE void storeAccountCredentials(QJsonObject accountCredentials);
   Q_SIGNAL void savedAccountDataAvailable(QString);
+  Q_SIGNAL void requestError(const QString &errorMessage);
 
-  void resetAccounts();
-  void storeAccountCredentials(QJsonObject accountCredentials);
   void deleteAccountCredentials(const QString &accountName);
   QJsonDocument loadAllAccountNames();
   QJsonObject loadAccountCredentials(const QString &userName);

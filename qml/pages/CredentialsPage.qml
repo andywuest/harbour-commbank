@@ -36,6 +36,7 @@ Page {
         commbankLoginService.requestError.connect(errorResultHandler)
         accountStorageService.savedAccountDataAvailable.connect(
                     savedAccountDataHandler)
+        accountStorageService.requestError.connect(errorResultHandler)
     }
 
     function disconnectSlots() {
@@ -43,6 +44,7 @@ Page {
         // var dataBackend = getSecurityDataBackend(watchlistSettings.dataBackend);
         commbankLoginService.loginResultAvailable.disconnect(loginResultHandler)
         commbankLoginService.requestError.disconnect(errorResultHandler)
+        accountStorageService.requestError.disconnect(errorResultHandler)
     }
 
     function savedAccountDataHandler(accountNames) {
@@ -71,7 +73,7 @@ Page {
     function populateInputFieldsWithLoadedCredentials(model) {
         clientIdTextField.text = model.client_id
         clientSecretTextField.text = model.client_secret
-        usernameTextField.text = model.name
+        usernameTextField.text = model.username
         passwordField.text = ""
     }
 
@@ -115,6 +117,14 @@ Page {
         }
 
         PullDownMenu {
+            MenuItem {
+                text: qsTr("Delete stored accounts")
+                visible: pullDownMenuModel.count > 0
+                onClicked: {
+                    accountStorageService.deleteAllAccountData();
+                    pullDownMenuModel.clear();
+                }
+            }
             Repeater {
                 model: pullDownMenuModel
                 MenuItem {

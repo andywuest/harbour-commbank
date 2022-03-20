@@ -41,6 +41,8 @@ Page {
         // account service
         commbankAccountService.allBalancesResultAvailable.connect(allBalancesResultHandler);
         commbankAccountService.requestError.connect(errorResultHandler);
+        // account storage service
+        accountStorageService.requestError.connect(errorResultHandler)
     }
 
     function disconnectSlots() {
@@ -51,6 +53,8 @@ Page {
         // account service
         commbankAccountService.allBalancesResultAvailable.disconnect(allBalancesResultHandler);
         commbankAccountService.requestError.disconnect(errorResultHandler);
+        // account storage service
+        accountStorageService.requestError.disconnect(errorResultHandler)
     }
 
     function challengeResultHandler(result) {
@@ -71,11 +75,16 @@ Page {
         } else {
             var dialog = pageStack.push(Qt.resolvedUrl("StoreCredentialsDialog.qml"), {
                                             "username": username
-                                        }
-                                        );
+                                        });
             dialog.accepted.connect(function() {
                 console.log("[SecondFactorLoginPage] storing credentials data under name : " + dialog.name);
-                // TODO actually call the storing method
+                var credentials = {
+                    "name" : dialog.name,
+                    "client_id" : clientId,
+                    "client_secret" : clientSecret,
+                    "username" : username
+                };
+                accountStorageService.storeAccountCredentials(credentials)
                 navigateToBalancesPage(accountBalances);
             });
             dialog.rejected.connect(function () {

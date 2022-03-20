@@ -57,6 +57,14 @@
         <source>Load %1</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Delete stored accounts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Store credentials</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LoadingIndicator</name>
