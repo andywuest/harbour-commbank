@@ -9,6 +9,25 @@
     </message>
 </context>
 <context>
+    <name>AccountTransactionsPage</name>
+    <message>
+        <source>Retrieving information...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 (Error Code: %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transactions</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CoverPage</name>
     <message>
         <source>My Cover</source>
@@ -59,10 +78,6 @@
     </message>
     <message>
         <source>Delete stored accounts</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Store credentials</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -39,6 +39,7 @@ PKGCONFIG += \
 
 DISTFILES += qml/harbour-commbank.qml \
     qml/cover/CoverPage.qml \
+    qml/pages/AccountTransactionsPage.qml \
     qml/pages/CredentialsPage.qml \
     qml/pages/SecondFactorLoginPage.qml \
     qml/pages/AccountOverviewPage.qml \

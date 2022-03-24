@@ -32,14 +32,21 @@ public:
   ~CommbankAccountService() = default;
 
   Q_INVOKABLE void getAllBalances();
-  Q_SIGNAL void allBalancesResultAvailable(const QString &challenge);
+  Q_INVOKABLE void getTransactions(const QString &accountId);
 
-private:
+  Q_SIGNAL void allBalancesResultAvailable(const QString &challenge);
+  Q_SIGNAL void transactionsResultAvailable(const QString &result);
+
+private:    
   void executeGetAccountBalances(const QUrl &url);
+  void executeGetTransactions(const QUrl &url);
+
   void processGetAccountBalancesResult(QByteArray responseData);
+  void processGetTransactionsResult(QByteArray responseData);
 
 private slots:
   void handleGetAccountBalancesFinished();
+  void handleGetTransactionsFinished();
 };
 
 #endif // COMMBANK_ACCOUNT_SERVICE_H

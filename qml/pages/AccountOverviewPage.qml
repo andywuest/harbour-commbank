@@ -147,8 +147,9 @@ Page {
 
                     onClicked: {
                         var selectedAccount = accountsModel.get(index);
-                        console.log("Selected: " + selectedAccount + ", index : " + index);
-                        // pageStack.push(Qt.resolvedUrl("AccountTransactionsPage.qml"), {"accountId": modelData.accountId, "iban": modelData.iban})
+                        console.log("[AccountOverviewPage] Selected: " + selectedAccount + ", index : " + index);
+                        console.log("[AccountOverviewPage] Selected: " + selectedAccount + ", accountId : " + selectedAccount.accountId);
+                        pageStack.push(Qt.resolvedUrl("AccountTransactionsPage.qml"), {"accountId": selectedAccount.accountId});
                     }
 
                     Item {

@@ -33,6 +33,56 @@ void CommbankAccountService::getAllBalances() {
   executeGetAccountBalances(QUrl(URL_ACCOUNT_BALANCES));
 }
 
+void CommbankAccountService::getTransactions(const QString &accountId) {
+  executeGetTransactions(QUrl(QString(URL_ACCOUNT_TRANSACTIONS).arg(accountId)));
+}
+
+void CommbankAccountService::executeGetTransactions(const QUrl &url) {
+    qDebug() << "CommbankAccountService::executeGetTransactions " << url;
+
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, MIME_TYPE_JSON);
+    request.setRawHeader("Accept", MIME_TYPE_JSON);
+    request.setRawHeader(
+        "Authorization",
+        QString("Bearer ").append(sessionContext->getAccessToken()).toUtf8());
+    request.setRawHeader("x-http-request-info",
+                         sessionContext->createRequestInfoString().toUtf8());
+
+    QNetworkReply *reply = networkAccessManager->get(request);
+
+    connectErrorSlot(reply);
+    connect(reply, SIGNAL(finished()), this,
+            SLOT(handleGetTransactionsFinished()));
+}
+
+void CommbankAccountService::handleGetTransactionsFinished() {
+  qDebug() << "CommbankAccountService::handleGetTransactionsFinished";
+  QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
+  reply->deleteLater();
+  if (reply->error() != QNetworkReply::NoError) {
+    return;
+  }
+
+  logResponseHeaders(reply);
+
+  processGetTransactionsResult(reply->readAll());
+}
+
+void CommbankAccountService::processGetTransactionsResult(
+    QByteArray responseData) {
+  QJsonDocument jsonDocumentBody = QJsonDocument::fromJson(responseData);
+  if (!jsonDocumentBody.isObject()) {
+    qDebug() << "response body not a json object!";
+  }
+
+  QString result = QString(responseData);
+  qDebug() << "CommbankAccountService::processGetTransactionsResult => "
+           << responseData;
+
+  emit transactionsResultAvailable(result);
+}
+
 void CommbankAccountService::executeGetAccountBalances(const QUrl &url) {
   qDebug() << "CommbankAccountService::executeGetAccountBalances " << url;
 
@@ -103,6 +153,7 @@ void CommbankAccountService::processGetAccountBalancesResult(
              << accountBalance["balanceEUR"].toObject()["unit"].toString();
 
     QJsonObject resultAccount;
+    resultAccount.insert("accountId", accountBalance["accountId"].toString());
     resultAccount.insert(
         "accountDisplayId",
         accountBalance["account"].toObject()["accountDisplayId"].toString());
@@ -128,49 +179,4 @@ void CommbankAccountService::processGetAccountBalancesResult(
   QString dataToString(resultDocument.toJson());
 
   emit allBalancesResultAvailable(dataToString);
-
-  //    {
-  //      "paging": {
-  //        "index": 0,
-  //        "matches": 1
-  //      },
-  //      "values": [
-  //        {
-  //          "account": {
-  //            "accountId": "6F91E9A225C74355834F5A0D9A304697",
-  //            "accountDisplayId": "977869927400",
-  //            "currency": "EUR",
-  //            "clientId": "40E61E65146441CEBC3DD7F0C70E7051",
-  //            "accountType": {
-  //              "key": "SA",
-  //              "text": "Verrechnungskonto"
-  //            },
-  //            "iban": "DE76200411440869927400",
-  //            "creditLimit": {
-  //              "value": "0",
-  //              "unit": "EUR"
-  //            }
-  //          },
-  //          "accountId": "6F91E9A225C74355834F5A0D9A304697",
-  //          "balance": {
-  //            "value": "4106.31",
-  //            "unit": "EUR"
-  //          },
-  //          "balanceEUR": {
-  //            "value": "4106.31",
-  //            "unit": "EUR"
-  //          },
-  //          "availableCashAmount": {
-  //            "value": "4106.31",
-  //            "unit": "EUR"
-  //          },
-  //          "availableCashAmountEUR": {
-  //            "value": "4106.31",
-  //            "unit": "EUR"
-  //          }
-  //        }
-  //      ]
-  //    }
-
-  // emit challengeResponseAvailable();
 }
