@@ -4,22 +4,14 @@
 <context>
     <name>AccountOverviewPage</name>
     <message>
-        <source>Account Balance</source>
-        <translation type="unfinished"></translation>
+        <source>Accounts</source>
+        <translation>Konten</translation>
     </message>
 </context>
 <context>
     <name>AccountTransactionsPage</name>
     <message>
         <source>Retrieving information...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1 (Error Code: %2)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -89,29 +81,6 @@
     </message>
 </context>
 <context>
-    <name>LoginPage</name>
-    <message>
-        <source>Show Page 2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>UI Template</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Login Page</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Send Challenge</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>SecondFactorLoginPage</name>
     <message>
         <source>2FA Authentication</source>
@@ -127,10 +96,6 @@
     </message>
     <message>
         <source>Second factor authentication failed. Please check the following error messages.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please can the image with your photoTAN device.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -151,6 +116,10 @@
     </message>
     <message>
         <source>Please clear the login request within your mobile phone application before you continue.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please scan the image with your photoTAN device.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

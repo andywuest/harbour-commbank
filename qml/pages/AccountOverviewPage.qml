@@ -70,7 +70,7 @@ Page {
 
 //        PullDownMenu {
 //            MenuItem {
-//                text: qsTr("About Zaster Banker")
+//                text: qsTr("About Commbank")
 //                onClicked: pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
 //            }
 //            MenuItem {
@@ -86,12 +86,12 @@ Page {
             spacing: Theme.paddingMedium
             PageHeader {
                 id: accountsHeader
-                title: qsTr("Account Balance")
+                title: qsTr("Accounts")
             }
 
 //            Image {
 //                id: overviewImage
-//                source: "../../images/zaster.png"
+//                source: "../../images/commbank.png"
 //                anchors {
 //                    horizontalCenter: parent.horizontalCenter
 //                }

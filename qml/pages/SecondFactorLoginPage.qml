@@ -191,7 +191,7 @@ Page {
         var sectionHeaderText = "";
         if (challengeType === "P_TAN") {
             challengeTextField.visible = true;
-            secondFactorInfoLabel.text = qsTr("Please can the image with your photoTAN device.")
+            secondFactorInfoLabel.text = qsTr("Please scan the image with your photoTAN device.")
             sectionHeaderText = qsTr("photoTAN");
         } else if (challengeType === "M_TAN") {
             challengeTextField.visible = true;
