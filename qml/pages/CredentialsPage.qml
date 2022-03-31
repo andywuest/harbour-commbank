@@ -20,7 +20,7 @@ import Sailfish.Silica 1.0
 
 import "../components/thirdparty"
 
-import "../js/credentials.js" as Credentials
+// import "../js/credentials.js" as Credentials
 
 Page {
     id: credentialsPage
