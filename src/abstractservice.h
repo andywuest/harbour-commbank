@@ -39,8 +39,12 @@ protected:
   QNetworkAccessManager *networkAccessManager;
   SessionContext *sessionContext;
 
+  QNetworkRequest prepareNetworkRequest(const QUrl url);
+
   void connectErrorSlot(QNetworkReply *reply);
   void logResponseHeaders(QNetworkReply *reply);
+  void logResponse(QString info, QJsonDocument jsonDocument);
+  void logSessionContext();
 };
 
 #endif // ABSTRACT_SERVICE_H

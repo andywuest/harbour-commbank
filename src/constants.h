@@ -35,7 +35,6 @@ const char URL_ACTIVATE_SESSION_TAN[] =
 const char URL_ACCOUNT_BALANCES[] =
     "https://api.comdirect.de/api/banking/clients/user/v2/accounts/balances";
 const char URL_ACCOUNT_TRANSACTIONS[] =
-     "https://api.comdirect.de/api/banking/v1/accounts/%1/transactions";
-
+    "https://api.comdirect.de/api/banking/v1/accounts/%1/transactions";
 
 #endif // CONSTANTS_H

@@ -70,6 +70,10 @@ void SessionContext::setRefreshTokenLogin(const QString &refreshTokenLogin) {
 
 QString SessionContext::getRefreshToken() { return refreshToken; }
 
+QString SessionContext::getRequestId() { return requestId; }
+
+QString SessionContext::getSessionId() { return sessionId; }
+
 void SessionContext::setRefreshToken(const QString &refreshToken) {
   this->refreshToken = refreshToken;
 }

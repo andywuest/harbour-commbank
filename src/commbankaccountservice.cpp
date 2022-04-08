@@ -34,26 +34,27 @@ void CommbankAccountService::getAllBalances() {
 }
 
 void CommbankAccountService::getTransactions(const QString &accountId) {
-  executeGetTransactions(QUrl(QString(URL_ACCOUNT_TRANSACTIONS).arg(accountId)));
+  executeGetTransactions(
+      QUrl(QString(URL_ACCOUNT_TRANSACTIONS).arg(accountId)));
 }
 
 void CommbankAccountService::executeGetTransactions(const QUrl &url) {
-    qDebug() << "CommbankAccountService::executeGetTransactions " << url;
+  qDebug() << "CommbankAccountService::executeGetTransactions " << url;
 
-    QNetworkRequest request(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, MIME_TYPE_JSON);
-    request.setRawHeader("Accept", MIME_TYPE_JSON);
-    request.setRawHeader(
-        "Authorization",
-        QString("Bearer ").append(sessionContext->getAccessToken()).toUtf8());
-    request.setRawHeader("x-http-request-info",
-                         sessionContext->createRequestInfoString().toUtf8());
+  QNetworkRequest request(url);
+  request.setHeader(QNetworkRequest::ContentTypeHeader, MIME_TYPE_JSON);
+  request.setRawHeader("Accept", MIME_TYPE_JSON);
+  request.setRawHeader(
+      "Authorization",
+      QString("Bearer ").append(sessionContext->getAccessToken()).toUtf8());
+  request.setRawHeader("x-http-request-info",
+                       sessionContext->createRequestInfoString().toUtf8());
 
-    QNetworkReply *reply = networkAccessManager->get(request);
+  QNetworkReply *reply = networkAccessManager->get(request);
 
-    connectErrorSlot(reply);
-    connect(reply, SIGNAL(finished()), this,
-            SLOT(handleGetTransactionsFinished()));
+  connectErrorSlot(reply);
+  connect(reply, SIGNAL(finished()), this,
+          SLOT(handleGetTransactionsFinished()));
 }
 
 void CommbankAccountService::handleGetTransactionsFinished() {

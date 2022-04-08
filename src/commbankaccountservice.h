@@ -37,7 +37,7 @@ public:
   Q_SIGNAL void allBalancesResultAvailable(const QString &challenge);
   Q_SIGNAL void transactionsResultAvailable(const QString &result);
 
-private:    
+private:
   void executeGetAccountBalances(const QUrl &url);
   void executeGetTransactions(const QUrl &url);
 

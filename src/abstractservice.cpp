@@ -16,6 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 #include "abstractservice.h"
+#include "constants.h"
 
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -34,11 +35,45 @@ AbstractService::~AbstractService() {
   qDebug() << "Shutting down AbstractService...";
 }
 
+void AbstractService::logSessionContext() {
+  qDebug() << "======= SESSION CONTEXT - START ======";
+  qDebug() << " * accessTokenLogin  : "
+           << sessionContext->getAccessTokenLogin();
+  qDebug() << " * refreshTokenLogin : "
+           << sessionContext->getRefreshTokenLogin();
+  qDebug() << " * accessToken       : " << sessionContext->getAccessToken();
+  qDebug() << " * refreshToken      : " << sessionContext->getRefreshToken();
+  qDebug() << " * sessionId         : " << sessionContext->getSessionId();
+  qDebug() << " * requestId         : " << sessionContext->getRequestId();
+  qDebug() << "======= SESSION CONTEXT - END   ======";
+}
+
+void AbstractService::logResponse(QString info, QJsonDocument jsonDocument) {
+  qDebug() << "======= RESPONSE - (" << info << ") START ====";
+  qDebug()
+      << "\n"
+      << jsonDocument.toJson(QJsonDocument::Indented).toStdString().c_str();
+  qDebug() << "======= RESPONSE - END   ====";
+}
+
 void AbstractService::logResponseHeaders(QNetworkReply *reply) {
+  QList<QString> relevantHeaders = {"x-once-authentication-info",
+                                    "x-http-request-info", "Authorization"};
   QList<QByteArray> headerList = reply->rawHeaderList();
+  qDebug() << "======= HEADER - START ======";
   foreach (QByteArray head, headerList) {
     qDebug() << head << ":" << reply->rawHeader(head);
   }
+  qDebug() << "======= HEADER - END   ======";
+}
+
+QNetworkRequest AbstractService::prepareNetworkRequest(const QUrl url) {
+  QNetworkRequest request(url);
+  request.setHeader(QNetworkRequest::ContentTypeHeader,
+                    MIME_TYPE_WWW_FORM_URL_ENCODED);
+  request.setRawHeader("Accept", MIME_TYPE_JSON);
+  request.setHeader(QNetworkRequest::UserAgentHeader, USER_AGENT);
+  return request;
 }
 
 void AbstractService::connectErrorSlot(QNetworkReply *reply) {

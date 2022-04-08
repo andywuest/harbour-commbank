@@ -39,6 +39,9 @@ public:
 
   QString createRequestInfoString();
 
+  QString getSessionId();
+  QString getRequestId();
+
 private:
   QString accessTokenLogin;  // accessToken when logging in
   QString refreshTokenLogin; // refreshToken when logging in
