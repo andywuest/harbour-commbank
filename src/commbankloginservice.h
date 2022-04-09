@@ -67,14 +67,13 @@ private:
                                                    const QString &username,
                                                    const QString &password);
   void processExecuteResourceOwnerPasswordCredentialsFlowResult(
-      QByteArray responseData);
+      QNetworkReply *reply);
 
   void executeGetSessionStatus(const QUrl &url);
-  void processGetSessionStatusResult(QByteArray responseData);
+  void processGetSessionStatusResult(QNetworkReply *reply);
 
   void executeCreateSessionTan(const QUrl &url);
-  void processCreateSessionTanResult(QByteArray responseData,
-                                     QNetworkReply *reply);
+  void processCreateSessionTanResult(QNetworkReply *reply);
 
   void executeActivateSessionTan(const QUrl &url,
                                  const QString &challengeResponse);
@@ -82,8 +81,7 @@ private:
                                        QNetworkReply *reply);
 
   void executeCDSecondaryFlow(const QUrl &url);
-  void processCDSecondaryFlowResult(QByteArray responseData,
-                                    QNetworkReply *reply);
+  void processCDSecondaryFlowResult(QNetworkReply *reply);
 
 private slots:
   void handleExecuteResourceOwnerPasswordCredentialsFlowFinished();

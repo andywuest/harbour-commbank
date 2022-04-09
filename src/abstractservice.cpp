@@ -56,21 +56,36 @@ void AbstractService::logResponse(QString info, QJsonDocument jsonDocument) {
   qDebug() << "======= RESPONSE - END   ====";
 }
 
+void AbstractService::logResponse(QString info, QNetworkReply *reply,
+                                  QJsonDocument jsonDocument) {
+  logResponseHeaders(reply);
+  qDebug() << "<< ======= RESPONSE - (" << info << ") START ====";
+  qDebug()
+      << "\n"
+      << jsonDocument.toJson(QJsonDocument::Indented).toStdString().c_str();
+  qDebug() << "<< ======= RESPONSE - END   ====";
+}
+
 void AbstractService::logResponseHeaders(QNetworkReply *reply) {
   QList<QString> relevantHeaders = {"x-once-authentication-info",
                                     "x-http-request-info", "Authorization"};
   QList<QByteArray> headerList = reply->rawHeaderList();
-  qDebug() << "======= HEADER - START ======";
+  qDebug() << "<< ======= HEADER - START ======";
   foreach (QByteArray head, headerList) {
     qDebug() << head << ":" << reply->rawHeader(head);
   }
-  qDebug() << "======= HEADER - END   ======";
+  qDebug() << "<< ======= HEADER - END   ======";
 }
 
-QNetworkRequest AbstractService::prepareNetworkRequest(const QUrl url) {
+QNetworkRequest AbstractService::prepareNetworkRequest(const QUrl url,
+                                                       bool contentTypeJson) {
   QNetworkRequest request(url);
-  request.setHeader(QNetworkRequest::ContentTypeHeader,
-                    MIME_TYPE_WWW_FORM_URL_ENCODED);
+  if (contentTypeJson) {
+    request.setHeader(QNetworkRequest::ContentTypeHeader, MIME_TYPE_JSON);
+  } else {
+    request.setHeader(QNetworkRequest::ContentTypeHeader,
+                      MIME_TYPE_WWW_FORM_URL_ENCODED);
+  }
   request.setRawHeader("Accept", MIME_TYPE_JSON);
   request.setHeader(QNetworkRequest::UserAgentHeader, USER_AGENT);
   return request;
