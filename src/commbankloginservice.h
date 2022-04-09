@@ -77,8 +77,7 @@ private:
 
   void executeActivateSessionTan(const QUrl &url,
                                  const QString &challengeResponse);
-  void processActivateSessionTanResult(QByteArray responseData,
-                                       QNetworkReply *reply);
+  void processActivateSessionTanResult(QNetworkReply *reply);
 
   void executeCDSecondaryFlow(const QUrl &url);
   void processCDSecondaryFlowResult(QNetworkReply *reply);
