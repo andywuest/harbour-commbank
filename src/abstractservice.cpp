@@ -40,72 +40,98 @@ void AbstractService::logSessionContext() {
            << sessionContext->getAccessTokenLogin();
   qDebug() << " * sessionContext [refreshTokenLogin] = "
            << sessionContext->getRefreshTokenLogin();
-  qDebug() << " * sessionContext [accessToken]       = " << sessionContext->getAccessToken();
-  qDebug() << " * sessionContext [refreshToken]      = " << sessionContext->getRefreshToken();
-  qDebug() << " * sessionContext [sessionId]         = " << sessionContext->getSessionId();
-  qDebug() << " * sessionContext [requestId]         = " << sessionContext->getRequestId();
-
+  qDebug() << " * sessionContext [accessToken]       = "
+           << sessionContext->getAccessToken();
+  qDebug() << " * sessionContext [refreshToken]      = "
+           << sessionContext->getRefreshToken();
+  qDebug() << " * sessionContext [sessionId]         = "
+           << sessionContext->getSessionId();
+  qDebug() << " * sessionContext [requestId]         = "
+           << sessionContext->getRequestId();
 }
 
-void AbstractService::logRequest(const QUrl url, QNetworkRequest request, QByteArray payload) {
-    QString logMessage;
-    logMessage = logMessage.append(">> ======= REQUEST - (%1) START ==== \n").arg("info"); // TODO
-    logMessage = logMessage.append("URL: %1 \n").arg(url.toString());
-    if (payload != nullptr) {
-        QJsonDocument jsonDocument = QJsonDocument::fromJson(payload);
-        logMessage = logMessage.append("Payload : \n%1\n").arg(jsonDocument.toJson(QJsonDocument::Indented).toStdString().c_str());
+void AbstractService::logRequest(const QUrl url, QNetworkRequest request,
+                                 QByteArray payload) {
+  QString logMessage;
+  logMessage = logMessage.append(">> ======= REQUEST - (%1) START ==== \n")
+                   .arg("info"); // TODO
+  logMessage = logMessage.append("URL: %1 \n").arg(url.toString());
+  if (payload != nullptr) {
+    QJsonDocument jsonDocument = QJsonDocument::fromJson(payload);
+    if (jsonDocument.isArray() || jsonDocument.isObject()) {
+      logMessage = logMessage.append("Payload : \n%1\n")
+                       .arg(jsonDocument.toJson(QJsonDocument::Indented)
+                                .toStdString()
+                                .c_str());
+    } else {
+      logMessage =
+          logMessage.append("Payload : \n'%1'\n").arg(QString(payload));
     }
+  }
 
-    // TODO filter
-    QList<QString> relevantHeaders = {"Content-Type", "x-once-authentication-info",
-                                      "x-http-request-info", "Authorization"};
+  // TODO filter
+  QList<QString> relevantHeaders = {"Content-Type",
+                                    "x-once-authentication-info",
+                                    "x-http-request-info", "Authorization"};
 
-    foreach (QByteArray head, request.rawHeaderList()) {
-        if (relevantHeaders.contains(QString(head))) {
-              logMessage = logMessage.append(" * header [%1]  = %2\n")
-                      .arg(QString(head), QString(request.rawHeader(head)));
-        }
+  foreach (QByteArray head, request.rawHeaderList()) {
+    if (relevantHeaders.contains(QString(head))) {
+      logMessage = logMessage.append(" * header [%1]  = %2\n")
+                       .arg(QString(head), QString(request.rawHeader(head)));
     }
+  }
 
-    logMessage = logMessage.append(" * sessionContext [accessTokenLogin]  = %1\n").arg(sessionContext->getAccessTokenLogin());
-    logMessage = logMessage.append(" * sessionContext [refreshTokenLogin] = %1\n").arg(sessionContext->getRefreshTokenLogin());
-    logMessage = logMessage.append(" * sessionContext [accessToken]       = %1\n").arg(sessionContext->getAccessToken());
-    logMessage = logMessage.append(" * sessionContext [refreshToken]      = %1\n").arg(sessionContext->getRefreshToken());
-    logMessage = logMessage.append(" * sessionContext [sessionId]         = %1\n").arg(sessionContext->getSessionId());
-    logMessage = logMessage.append(" * sessionContext [requestId]         = %1\n").arg(sessionContext->getRequestId());
+  logMessage = logMessage.append(" * sessionContext [accessTokenLogin]  = %1\n")
+                   .arg(sessionContext->getAccessTokenLogin());
+  logMessage = logMessage.append(" * sessionContext [refreshTokenLogin] = %1\n")
+                   .arg(sessionContext->getRefreshTokenLogin());
+  logMessage = logMessage.append(" * sessionContext [accessToken]       = %1\n")
+                   .arg(sessionContext->getAccessToken());
+  logMessage = logMessage.append(" * sessionContext [refreshToken]      = %1\n")
+                   .arg(sessionContext->getRefreshToken());
+  logMessage = logMessage.append(" * sessionContext [sessionId]         = %1\n")
+                   .arg(sessionContext->getSessionId());
+  logMessage = logMessage.append(" * sessionContext [requestId]         = %1\n")
+                   .arg(sessionContext->getRequestId());
 
-    logMessage = logMessage.append(">> ======= REQUEST - END   ====");
-    qDebug().noquote() << logMessage;
+  logMessage = logMessage.append(">> ======= REQUEST - END   ====");
+  qDebug().noquote() << logMessage;
 }
 
-void AbstractService::logResponse(QString info, QNetworkReply *reply, QJsonDocument jsonDocument) {
-    QString logMessage;
-    logMessage = logMessage.append("<< ======= RESPONSE - (%1) START ==== \n").arg(info);
-    logMessage = logMessage.append("Payload : \n%1\n").arg(jsonDocument.toJson(QJsonDocument::Indented).toStdString().c_str());
+void AbstractService::logResponse(QString info, QNetworkReply *reply,
+                                  QJsonDocument jsonDocument) {
+  QString logMessage;
+  logMessage =
+      logMessage.append("<< ======= RESPONSE - (%1) START ==== \n").arg(info);
+  logMessage = logMessage.append("Payload : \n%1\n")
+                   .arg(jsonDocument.toJson(QJsonDocument::Indented)
+                            .toStdString()
+                            .c_str());
 
-    // TODO filter
-    QList<QString> relevantHeaders = {"Content-Type", "x-once-authentication-info",
-                                      "x-http-request-info", "Authorization"};
+  // TODO filter
+  QList<QString> relevantHeaders = {"Content-Type",
+                                    "x-once-authentication-info",
+                                    "x-http-request-info", "Authorization"};
 
-    foreach (QByteArray head, reply->rawHeaderList()) {
-        if (relevantHeaders.contains(QString(head))) {
-              logMessage = logMessage.append(" * header [%1]  = %2\n")
-                      .arg(QString(head), QString(reply->rawHeader(head)));
-        }
+  foreach (QByteArray head, reply->rawHeaderList()) {
+    if (relevantHeaders.contains(QString(head))) {
+      logMessage = logMessage.append(" * header [%1]  = %2\n")
+                       .arg(QString(head), QString(reply->rawHeader(head)));
     }
+  }
 
-    logMessage = logMessage.append("<< ======= RESPONSE - END   ====");
-    qDebug().noquote() << logMessage;
+  logMessage = logMessage.append("<< ======= RESPONSE - END   ====");
+  qDebug().noquote() << logMessage;
 
-//  qDebug() << "======= RESPONSE - (" << info << ") START ====";
-//  qDebug()
-//      << "\n"
-//      << jsonDocument.toJson(QJsonDocument::Indented).toStdString().c_str();
-//  qDebug() << "======= RESPONSE - END   ====";
+  //  qDebug() << "======= RESPONSE - (" << info << ") START ====";
+  //  qDebug()
+  //      << "\n"
+  //      << jsonDocument.toJson(QJsonDocument::Indented).toStdString().c_str();
+  //  qDebug() << "======= RESPONSE - END   ====";
 }
 
 void AbstractService::logResponse(QString info, QJsonDocument jsonDocument) {
-  //logResponseHeaders(reply);
+  // logResponseHeaders(reply);
   qDebug() << "<< ======= RESPONSE - (" << info << ") START ====";
   qDebug()
       << "\n"
@@ -113,16 +139,19 @@ void AbstractService::logResponse(QString info, QJsonDocument jsonDocument) {
   qDebug() << "<< ======= RESPONSE - END   ====";
 }
 
-void AbstractService::logHeaders(QList<QByteArray> headerList, QNetworkRequest request) {
-    QList<QString> relevantHeaders = {"Content-Type", "x-once-authentication-info",
-                                      "x-http-request-info", "Authorization"};
-    foreach (QByteArray head, headerList) {
-      qDebug() << " * header [" <<head << "] = " << request.rawHeader(head);
-    }
+void AbstractService::logHeaders(QList<QByteArray> headerList,
+                                 QNetworkRequest request) {
+  QList<QString> relevantHeaders = {"Content-Type",
+                                    "x-once-authentication-info",
+                                    "x-http-request-info", "Authorization"};
+  foreach (QByteArray head, headerList) {
+    qDebug() << " * header [" << head << "] = " << request.rawHeader(head);
+  }
 }
 
 void AbstractService::logResponseHeaders(QNetworkReply *reply) {
-  QList<QString> relevantHeaders = {"Content-Type", "x-once-authentication-info",
+  QList<QString> relevantHeaders = {"Content-Type",
+                                    "x-once-authentication-info",
                                     "x-http-request-info", "Authorization"};
   QList<QByteArray> headerList = reply->rawHeaderList();
   qDebug() << "<< ======= HEADER - START ======";

@@ -41,14 +41,14 @@ void CommbankAccountService::getTransactions(const QString &accountId) {
 void CommbankAccountService::executeGetTransactions(const QUrl &url) {
   qDebug() << "CommbankAccountService::executeGetTransactions " << url;
 
-  QNetworkRequest request(url);
-  request.setHeader(QNetworkRequest::ContentTypeHeader, MIME_TYPE_JSON);
-  request.setRawHeader("Accept", MIME_TYPE_JSON);
+  QNetworkRequest request = prepareNetworkRequest(url, true);
   request.setRawHeader(
       "Authorization",
       QString("Bearer ").append(sessionContext->getAccessToken()).toUtf8());
   request.setRawHeader("x-http-request-info",
                        sessionContext->createRequestInfoString().toUtf8());
+
+  logRequest(url, request, nullptr);
 
   QNetworkReply *reply = networkAccessManager->get(request);
 
@@ -65,36 +65,35 @@ void CommbankAccountService::handleGetTransactionsFinished() {
     return;
   }
 
-  logResponseHeaders(reply);
-
-  processGetTransactionsResult(reply->readAll());
+  processGetTransactionsResult(reply);
 }
 
 void CommbankAccountService::processGetTransactionsResult(
-    QByteArray responseData) {
-  QJsonDocument jsonDocumentBody = QJsonDocument::fromJson(responseData);
-  if (!jsonDocumentBody.isObject()) {
+    QNetworkReply *reply) {
+  qDebug() << "CommbankAccountService::processGetTransactionsResult";
+  QByteArray responseData = reply->readAll();
+  QJsonDocument jsonDocument = QJsonDocument::fromJson(responseData);
+  if (!jsonDocument.isObject()) {
     qDebug() << "response body not a json object!";
   }
 
-  QString result = QString(responseData);
-  qDebug() << "CommbankAccountService::processGetTransactionsResult => "
-           << responseData;
+  logResponse("body", reply, jsonDocument);
 
+  QString result = QString(responseData);
   emit transactionsResultAvailable(result);
 }
 
 void CommbankAccountService::executeGetAccountBalances(const QUrl &url) {
   qDebug() << "CommbankAccountService::executeGetAccountBalances " << url;
 
-  QNetworkRequest request(url);
-  request.setHeader(QNetworkRequest::ContentTypeHeader, MIME_TYPE_JSON);
-  request.setRawHeader("Accept", MIME_TYPE_JSON);
+  QNetworkRequest request = prepareNetworkRequest(url, true);
   request.setRawHeader(
       "Authorization",
       QString("Bearer ").append(sessionContext->getAccessToken()).toUtf8());
   request.setRawHeader("x-http-request-info",
                        sessionContext->createRequestInfoString().toUtf8());
+
+  logRequest(url, request, nullptr);
 
   QNetworkReply *reply = networkAccessManager->get(request);
 
@@ -111,26 +110,24 @@ void CommbankAccountService::handleGetAccountBalancesFinished() {
     return;
   }
 
-  logResponseHeaders(reply);
-
-  processGetAccountBalancesResult(reply->readAll());
+  processGetAccountBalancesResult(reply);
 }
 
 void CommbankAccountService::processGetAccountBalancesResult(
-    QByteArray responseData) {
-  QJsonDocument jsonDocumentBody = QJsonDocument::fromJson(responseData);
-  if (!jsonDocumentBody.isObject()) {
+    QNetworkReply *reply) {
+  qDebug() << "CommbankAccountService::processGetAccountBalancesResult";
+  QByteArray responseData = reply->readAll();
+  QJsonDocument jsonDocument = QJsonDocument::fromJson(responseData);
+  if (!jsonDocument.isObject()) {
     qDebug() << "response body not a json object!";
   }
 
-  QString result = QString(responseData);
-  qDebug() << "CommbankAccountService::processGetAccountBalancesResult => "
-           << responseData;
+  logResponse("body", reply, jsonDocument);
 
   QJsonDocument resultDocument;
   QJsonArray resultArray;
 
-  QJsonArray accountsArray = jsonDocumentBody.object()["values"].toArray();
+  QJsonArray accountsArray = jsonDocument.object()["values"].toArray();
 
   foreach (const QJsonValue &value, accountsArray) {
     QJsonObject accountBalance = value.toObject();

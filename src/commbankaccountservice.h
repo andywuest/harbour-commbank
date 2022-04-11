@@ -41,8 +41,8 @@ private:
   void executeGetAccountBalances(const QUrl &url);
   void executeGetTransactions(const QUrl &url);
 
-  void processGetAccountBalancesResult(QByteArray responseData);
-  void processGetTransactionsResult(QByteArray responseData);
+  void processGetAccountBalancesResult(QNetworkReply *reply);
+  void processGetTransactionsResult(QNetworkReply *reply);
 
 private slots:
   void handleGetAccountBalancesFinished();
