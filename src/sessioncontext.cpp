@@ -44,8 +44,8 @@ QString SessionContext::createRequestInfoString() {
     qDebug() << "SessionContext::sessionId created : " << this->sessionId;
   }
 
-  return QString("{\"clientRequestId\":{\"sessionId\":\"{{%1}}\",\"requestId\":"
-                 "\"{{%2}}\"}}")
+  return QString("{\"clientRequestId\":{\"sessionId\":\"%1\",\"requestId\":"
+                 "\"%2\"}}")
       .arg(this->sessionId, this->requestId);
 }
 
