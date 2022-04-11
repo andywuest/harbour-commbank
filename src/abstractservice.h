@@ -42,13 +42,9 @@ protected:
   QNetworkRequest prepareNetworkRequest(const QUrl url, bool contentTypeJson);
 
   void connectErrorSlot(QNetworkReply *reply);
-  void logHeaders(QList<QByteArray> headerList, QNetworkRequest request);
-  void logResponseHeaders(QNetworkReply *reply);
   void logRequest(const QUrl url, QNetworkRequest request, QByteArray payload);
-  void logResponse(QString info, QJsonDocument jsonDocument);
   void logResponse(QString info, QNetworkReply *reply,
                    QJsonDocument jsonDocument);
-  void logSessionContext();
 };
 
 #endif // ABSTRACT_SERVICE_H

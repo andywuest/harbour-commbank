@@ -37,13 +37,12 @@ QString SessionContext::createSessionId() {
 QString SessionContext::createRequestInfoString() {
   if (requestId.isEmpty()) {
     this->requestId = createRequestId();
+    qDebug() << "SessionContext::requestId created : " << this->requestId;
   }
   if (sessionId.isEmpty()) {
     this->sessionId = createSessionId();
+    qDebug() << "SessionContext::sessionId created : " << this->sessionId;
   }
-
-  qDebug() << "SessionContext::sessionId : " << this->sessionId;
-  qDebug() << "SessionContext::requestId : " << this->requestId;
 
   return QString("{\"clientRequestId\":{\"sessionId\":\"{{%1}}\",\"requestId\":"
                  "\"{{%2}}\"}}")

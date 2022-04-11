@@ -35,21 +35,6 @@ AbstractService::~AbstractService() {
   qDebug() << "Shutting down AbstractService...";
 }
 
-void AbstractService::logSessionContext() {
-  qDebug() << " * sessionContext [accessTokenLogin]  = "
-           << sessionContext->getAccessTokenLogin();
-  qDebug() << " * sessionContext [refreshTokenLogin] = "
-           << sessionContext->getRefreshTokenLogin();
-  qDebug() << " * sessionContext [accessToken]       = "
-           << sessionContext->getAccessToken();
-  qDebug() << " * sessionContext [refreshToken]      = "
-           << sessionContext->getRefreshToken();
-  qDebug() << " * sessionContext [sessionId]         = "
-           << sessionContext->getSessionId();
-  qDebug() << " * sessionContext [requestId]         = "
-           << sessionContext->getRequestId();
-}
-
 void AbstractService::logRequest(const QUrl url, QNetworkRequest request,
                                  QByteArray payload) {
   QString logMessage;
@@ -122,43 +107,6 @@ void AbstractService::logResponse(QString info, QNetworkReply *reply,
 
   logMessage = logMessage.append("<< ======= RESPONSE - END   ====");
   qDebug().noquote() << logMessage;
-
-  //  qDebug() << "======= RESPONSE - (" << info << ") START ====";
-  //  qDebug()
-  //      << "\n"
-  //      << jsonDocument.toJson(QJsonDocument::Indented).toStdString().c_str();
-  //  qDebug() << "======= RESPONSE - END   ====";
-}
-
-void AbstractService::logResponse(QString info, QJsonDocument jsonDocument) {
-  // logResponseHeaders(reply);
-  qDebug() << "<< ======= RESPONSE - (" << info << ") START ====";
-  qDebug()
-      << "\n"
-      << jsonDocument.toJson(QJsonDocument::Indented).toStdString().c_str();
-  qDebug() << "<< ======= RESPONSE - END   ====";
-}
-
-void AbstractService::logHeaders(QList<QByteArray> headerList,
-                                 QNetworkRequest request) {
-  QList<QString> relevantHeaders = {"Content-Type",
-                                    "x-once-authentication-info",
-                                    "x-http-request-info", "Authorization"};
-  foreach (QByteArray head, headerList) {
-    qDebug() << " * header [" << head << "] = " << request.rawHeader(head);
-  }
-}
-
-void AbstractService::logResponseHeaders(QNetworkReply *reply) {
-  QList<QString> relevantHeaders = {"Content-Type",
-                                    "x-once-authentication-info",
-                                    "x-http-request-info", "Authorization"};
-  QList<QByteArray> headerList = reply->rawHeaderList();
-  qDebug() << "<< ======= HEADER - START ======";
-  foreach (QByteArray head, headerList) {
-    qDebug() << head << ":" << reply->rawHeader(head);
-  }
-  qDebug() << "<< ======= HEADER - END   ======";
 }
 
 QNetworkRequest AbstractService::prepareNetworkRequest(const QUrl url,

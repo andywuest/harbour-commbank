@@ -232,7 +232,8 @@ void CommbankLoginService::processCreateSessionTanResult(QNetworkReply *reply) {
     qDebug() << "response header not a json object!";
   }
 
-  logResponse("x-once-authentication-info", jsonDocumentHeader);
+  // TODO check if we need this one -> is already logged via header
+  // logResponse("x-once-authentication-info", jsonDocumentHeader);
 
   QJsonObject headerObject = jsonDocumentHeader.object();
   this->challengeId = headerObject["id"].toString();
