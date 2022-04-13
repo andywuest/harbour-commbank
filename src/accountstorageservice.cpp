@@ -104,6 +104,8 @@ void AccountStorageService::storeAccountCredentials(
   QJsonObject allAccountData = loadAccountCredentials();
   allAccountData.insert(username, accountCredentials);
 
+  qDebug() << "adding accoun to json object : " << allAccountData;
+
   // reset and create
   deleteCollection();
   createCollection();
@@ -111,6 +113,8 @@ void AccountStorageService::storeAccountCredentials(
   QJsonDocument document;
   document.setObject(allAccountData);
   QString documentString(document.toJson());
+
+  qDebug() << "data to store in collection : " << documentString;
 
   // store data in wallet
   Sailfish::Secrets::Secret secret(secretsIdentifier);
@@ -134,6 +138,9 @@ void AccountStorageService::storeAccountCredentials(
 
   qDebug() << storeCode.result().code();
   qDebug() << storeCode.result().errorMessage();
+
+  qDebug() << " trying to load stored credentials";
+  loadAccountCredentials();
 }
 
 void AccountStorageService::deleteAccountCredentials(
@@ -162,6 +169,7 @@ QJsonObject AccountStorageService::loadAccountCredentials() {
 
   if (fetchCode->result().code() != Sailfish::Secrets::Result::Succeeded) {
     QJsonObject emptyObject;
+    fetchCode->deleteLater();
     return emptyObject;
   }
 
