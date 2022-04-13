@@ -42,7 +42,9 @@ public:
                                 const QString &clientSecret,
                                 const QString &username,
                                 const QString &password);
-  Q_INVOKABLE void sendChallengeResponse(const QString &challengeResponse);
+  Q_INVOKABLE void sendChallengeResponse(const QString &challengeResponse,
+                                         const QString &clientId,
+                                         const QString &clientSecret);
 
   Q_SIGNAL void loginResultAvailable(const QString &challenge,
                                      const QString &challengeType);
@@ -76,10 +78,13 @@ private:
   void processCreateSessionTanResult(QNetworkReply *reply);
 
   void executeActivateSessionTan(const QUrl &url,
-                                 const QString &challengeResponse);
+                                 const QString &challengeResponse,
+                                 const QString &clientId,
+                                 const QString &clientSecret);
   void processActivateSessionTanResult(QNetworkReply *reply);
 
-  void executeCDSecondaryFlow(const QUrl &url);
+  void executeCDSecondaryFlow(const QUrl &url, const QString &clientId,
+                              const QString &clientSecret);
   void processCDSecondaryFlowResult(QNetworkReply *reply);
 
 private slots:

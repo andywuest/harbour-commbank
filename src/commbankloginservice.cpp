@@ -262,17 +262,19 @@ void CommbankLoginService::processCreateSessionTanResult(QNetworkReply *reply) {
 }
 
 void CommbankLoginService::sendChallengeResponse(
-    const QString &challengeResponse) {
+    const QString &challengeResponse, const QString &clientId,
+    const QString &clientSecret) {
   qDebug() << "CommbankLoginService::sendChallengeResponse "
            << challengeResponse;
 
   executeActivateSessionTan(
       QUrl(QString(URL_ACTIVATE_SESSION_TAN).arg(this->identifier)),
-      challengeResponse);
+      challengeResponse, clientId, clientSecret);
 }
 
 void CommbankLoginService::executeActivateSessionTan(
-    const QUrl &url, const QString &challengeResponse) {
+    const QUrl &url, const QString &challengeResponse, const QString &clientId,
+    const QString &clientSecret) {
   qDebug() << "CommbankLoginService::executeActivateSessionTan "
            << challengeResponse;
 
@@ -317,9 +319,12 @@ void CommbankLoginService::executeActivateSessionTan(
   QNetworkReply *reply =
       networkAccessManager->sendCustomRequest(request, "PATCH", buffer);
 
+  reply->setProperty("clientId", clientId);
+  reply->setProperty("clientSecret", clientSecret);
+
   connectErrorSlot(reply);
-  connect(reply, SIGNAL(finished()), this,
-          SLOT(handleActivateSessionTanFinished()));
+  connect(reply, &QNetworkReply::finished, this,
+          &CommbankLoginService::handleActivateSessionTanFinished);
 }
 
 void CommbankLoginService::handleActivateSessionTanFinished() {
@@ -343,17 +348,21 @@ void CommbankLoginService::processActivateSessionTanResult(
 
   logResponse("body", reply, jsonDocumentBody);
 
-  executeCDSecondaryFlow(QUrl(URL_OAUTH_TOKEN));
+  executeCDSecondaryFlow(QUrl(URL_OAUTH_TOKEN),
+                         reply->property("clientId").toString(),
+                         reply->property("clientSecret").toString());
 }
 
-void CommbankLoginService::executeCDSecondaryFlow(const QUrl &url) {
+void CommbankLoginService::executeCDSecondaryFlow(const QUrl &url,
+                                                  const QString &clientId,
+                                                  const QString &clientSecret) {
   qDebug() << "CommbankLoginService::executeCDSecondaryFlow " << url;
 
   QNetworkRequest request = prepareNetworkRequest(url, false);
 
   QUrlQuery postData;
-  postData.addQueryItem("client_id", CLIENT_ID);
-  postData.addQueryItem("client_secret", CLIENT_SECRET);
+  postData.addQueryItem("client_id", clientId);
+  postData.addQueryItem("client_secret", clientSecret);
   postData.addQueryItem("grant_type", "cd_secondary");
   postData.addQueryItem("token", sessionContext->getAccessTokenLogin());
 
@@ -363,8 +372,8 @@ void CommbankLoginService::executeCDSecondaryFlow(const QUrl &url) {
       networkAccessManager->post(request, postData.toString().toUtf8());
 
   connectErrorSlot(reply);
-  connect(reply, SIGNAL(finished()), this,
-          SLOT(handleCDSecondaryFlowFinished()));
+  connect(reply, &QNetworkReply::finished, this,
+          &CommbankLoginService::handleCDSecondaryFlowFinished);
 }
 
 void CommbankLoginService::handleCDSecondaryFlowFinished() {

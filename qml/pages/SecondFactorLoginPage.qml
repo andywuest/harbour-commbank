@@ -156,7 +156,7 @@ Page {
                     loading = true;
                     errorInfoLabel.visible = false;
                     errorDetailInfoLabel.text = "";
-                    commbankLoginService.sendChallengeResponse(challengeTextField.text);
+                    commbankLoginService.sendChallengeResponse(challengeTextField.text, clientId, clientSecret);
                 }
             }
 
