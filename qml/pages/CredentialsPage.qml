@@ -150,7 +150,7 @@ Page {
                 anchors {
                     horizontalCenter: parent.horizontalCenter
                 }
-                visible: overviewPage.isPortrait
+                visible: credentialsPage.isPortrait
 
                 fillMode: Image.PreserveAspectFit
                 width: 1/2 * parent.width
@@ -245,8 +245,11 @@ Page {
     }
 
     Component.onCompleted: {
-        connectSlots()
+        connectSlots();
         accountStorageService.loadSavedAccountData()
+//        clientIdTextField.text = Credentials.clientId
+//        clientSecretTextField.text = Credentials.clientSecret
+//        usernameTextField.text = Credentials.username
     }
 
     LoadingIndicator {
