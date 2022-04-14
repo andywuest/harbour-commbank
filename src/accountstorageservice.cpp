@@ -27,7 +27,7 @@
 #include "accountstorageservice.h"
 
 const QString WALLET_COLLECTION_NAME =
-    QStringLiteral("xx"); // TODO give final name
+    QStringLiteral("xx3"); // TODO give final name
 
 AccountStorageService::AccountStorageService(QObject *parent)
     : QObject(parent), secretsIdentifier(Sailfish::Secrets::Secret::Identifier(

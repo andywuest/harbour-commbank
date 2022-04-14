@@ -84,23 +84,33 @@ Page {
 
             width: overviewPage.width
             spacing: Theme.paddingMedium
+
             PageHeader {
                 id: accountsHeader
-                title: qsTr("Accounts")
+                title: qsTr("Accounts Overview")
             }
 
-//            Image {
-//                id: overviewImage
-//                source: "../../images/commbank.png"
-//                anchors {
-//                    horizontalCenter: parent.horizontalCenter
-//                }
-//                visible: overviewPage.isPortrait
+            Image {
+                id: overviewImage
+                source: "../icons/commbank.png"
+                anchors {
+                    horizontalCenter: parent.horizontalCenter
+                }
+                visible: overviewPage.isPortrait
 
-//                fillMode: Image.PreserveAspectFit
-//                width: 1/2 * parent.width
+                fillMode: Image.PreserveAspectFit
+                width: 1/2 * parent.width
+            }
+
+            SectionHeader {
+                text: qsTr("Accounts")
+            }
+//            PageHeader {
+//                id: searchHeader
+//                title: qsTr("2FA Authentication")
 //            }
 
+            // TODO pruefen ob das hier sinn macht..... die naechsten beiden
             Text {
                 id: bankNameText
                 x: Theme.horizontalPageMargin

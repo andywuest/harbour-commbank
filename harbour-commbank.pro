@@ -39,13 +39,14 @@ PKGCONFIG += \
 
 DISTFILES += qml/harbour-commbank.qml \
     qml/cover/CoverPage.qml \
-    qml/pages/AccountTransactionsPage.qml \
     qml/pages/CredentialsPage.qml \
     qml/pages/SecondFactorLoginPage.qml \
+    qml/pages/StoreCredentialsDialog.qml \
     qml/pages/AccountOverviewPage.qml \
+    qml/pages/AccountTransactionsPage.qml \
     qml/components/thirdparty/LoadingIndicator.qml \
     qml/js/credentials.js \
-    qml/pages/StoreCredentialsDialog.qml \
+    qml/icons/commbank.png \
     rpm/harbour-commbank.changes.in \
     rpm/harbour-commbank.changes.run.in \
     rpm/harbour-commbank.spec \

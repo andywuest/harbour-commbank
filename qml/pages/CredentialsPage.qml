@@ -88,7 +88,7 @@ Page {
         console.log("[CredentialsPage] success received - " + challenge + ", " + challengeType)
         loading = false
         disconnectSlots();
-        pageStack.clear();
+        // pageStack.clear(); -- TODO erst mal entfern fuer einfachers debugging -damit nicht jedes malneueingabe
         pageStack.push(Qt.resolvedUrl("SecondFactorLoginPage.qml"), {
                            "usernameKnown": isKnownUsername(usernameTextField.text),
                            "challenge": challenge,
@@ -142,6 +142,18 @@ Page {
             PageHeader {
                 id: searchHeader
                 title: qsTr("Enter your Credentials")
+            }
+
+            Image {
+                id: overviewImage
+                source: "../icons/commbank.png"
+                anchors {
+                    horizontalCenter: parent.horizontalCenter
+                }
+                visible: overviewPage.isPortrait
+
+                fillMode: Image.PreserveAspectFit
+                width: 1/2 * parent.width
             }
 
             SectionHeader {
@@ -206,30 +218,6 @@ Page {
                 }
                 onClicked: clearInputFields()
             }
-
-
-// TODO this logic has to be called after a successful second factor login
-//            Button {
-//                id: todoRemove
-//                text: qsTr("Store credentials")
-//                anchors {
-//                    horizontalCenter: parent.horizontalCenter
-//                }
-//                onClicked: {
-//                    var dialog = pageStack.push(Qt.resolvedUrl("StoreCredentialsDialog.qml"),
-//                                                                     {
-//                                                    "clientId": clientIdTextField.text,
-//                                                    "clientSecret": clientSecretTextField.text,
-//                                                    "username": usernameTextField.text
-//                                                }
-//                                                )
-//                    dialog.accepted.connect(function() {
-//                                             console.log("Credentials name: " + dialog.name)
-//                                         })
-//                }
-//            }
-
-
 
             Label {
                 id: separatorLabel

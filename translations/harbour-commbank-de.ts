@@ -7,6 +7,10 @@
         <source>Accounts</source>
         <translation>Konten</translation>
     </message>
+    <message>
+        <source>Accounts Overview</source>
+        <translation>Kontenübersicht</translation>
+    </message>
 </context>
 <context>
     <name>AccountTransactionsPage</name>
@@ -22,8 +26,8 @@
 <context>
     <name>CoverPage</name>
     <message>
-        <source>My Cover</source>
-        <translation>Mein Cover</translation>
+        <source>Commbank Cover</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

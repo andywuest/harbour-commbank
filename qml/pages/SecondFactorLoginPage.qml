@@ -125,6 +125,18 @@ Page {
                 title: qsTr("2FA Authentication")
             }
 
+            Image {
+                id: overviewImage
+                source: "../icons/commbank.png"
+                anchors {
+                    horizontalCenter: parent.horizontalCenter
+                }
+                visible: overviewPage.isPortrait
+
+                fillMode: Image.PreserveAspectFit
+                width: 1/2 * parent.width
+            }
+
             SectionHeader {
                 id: secondFactorSectionHeader
             }
