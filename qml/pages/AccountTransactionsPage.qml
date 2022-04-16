@@ -18,6 +18,8 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 
+import "../js/functions.js" as Functions
+
 Page {
     id: transactionsPage
     allowedOrientations: Orientation.All
@@ -227,8 +229,7 @@ Page {
                                     font.pixelSize: Theme.fontSizeTiny
                                     color: Theme.secondaryColor
                                     visible: !transactionsPage.isPortfolio
-                                    text: bookingDate
-                                        // transactionsPage.isPortfolio ? "" : modelData.volume.date.toLocaleDateString(Locale.ShortFormat)
+                                    text: Functions.prettyTime(bookingDate, Locale.LongFormat);
                                 }
                                 Text {
                                     id: otherPartyNameText
@@ -237,10 +238,11 @@ Page {
                                     font.bold: true
                                     color: Theme.primaryColor
                                     elide: Text.ElideRight
-                                    maximumLineCount: 2
+                                    maximumLineCount: 1
                                     wrapMode: Text.Wrap
                                     visible: text ? true : false
-                                    text: "TODO Other Party name"
+                                    text: Functions.determineThirdParty(deptor, creditor, remittanceInfo);
+                                        // "TODO Other Party name"
                                         // transactionsPage.isPortfolio ? modelData.itemId : modelData.details.otherPartyName
                                     textFormat: Text.StyledText
                                 }
@@ -259,7 +261,7 @@ Page {
                                     width: parent.width
                                     font.pixelSize: Theme.fontSizeExtraSmall
                                     color: Theme.primaryColor
-                                    text: remittanceInfo
+                                    text: Functions.determineRemittanceInfo(remittanceInfo)
                                         // transactionsPage.isPortfolio ? ( qsTr("<b>Amount: </b> %1").arg((modelData.amountNegative ? "-" : "") + Number(modelData.amount).toLocaleString(Qt.locale(), "f", 2)) + "<br>" + qsTr("<b>Price: </b> %1 %2").arg(Number(modelData.price).toLocaleString(Qt.locale(), "f", 2)).arg(modelData.priceCurrency) ) : modelData.details.transactionPurpose
                                     textFormat: Text.StyledText
                                     wrapMode: Text.Wrap
@@ -275,8 +277,7 @@ Page {
                                 verticalAlignment: Text.AlignVCenter
                                 font.pixelSize: Theme.fontSizeMedium
                                 color: Theme.highlightColor
-                                text: amount.value // + " " + amount.unit
-                                    // transactionsPage.isPortfolio ? ((modelData.valueNegative ? "-" : "") +  Number(modelData.value).toLocaleString(Qt.locale(), "f", 2) + " " + modelData.valueCurrency ) : (modelData.volume.creditDebit === "D" ? "- " : "") + Number(modelData.volume.value).toLocaleString(Qt.locale(), "f", 2)
+                                text: Functions.formatAmount(amount);
                             }
                         }
 

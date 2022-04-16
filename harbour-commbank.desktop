@@ -9,4 +9,4 @@ Name[de]=Commbank
 [X-Sailjail]
 OrganizationName=de.andreas-wuest-it-consulting
 ApplicationName=harbour-commbank
-Permissions=Internet
+Permissions=Internet;Secrets;UserDirs
