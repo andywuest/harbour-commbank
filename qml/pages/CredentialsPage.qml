@@ -153,7 +153,8 @@ Page {
                 visible: credentialsPage.isPortrait
 
                 fillMode: Image.PreserveAspectFit
-                width: 1/2 * parent.width
+                width: parent.width / 2
+                height: overviewImage.width
             }
 
             SectionHeader {

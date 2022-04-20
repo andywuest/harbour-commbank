@@ -23,11 +23,9 @@
 #include <QNetworkReply>
 #include <QObject>
 
-#include <Sailfish/Secrets/createcollectionrequest.h>
-#include <Sailfish/Secrets/deletecollectionrequest.h>
-#include <Sailfish/Secrets/deletesecretrequest.h>
-#include <Sailfish/Secrets/storedsecretrequest.h>
-#include <Sailfish/Secrets/storesecretrequest.h>
+#include <Sailfish/Secrets/request.h>
+#include <Sailfish/Secrets/secret.h>
+#include <Sailfish/Secrets/secretmanager.h>
 
 class AccountStorageService : public QObject {
   Q_OBJECT
@@ -41,6 +39,7 @@ public:
   Q_SIGNAL void savedAccountDataAvailable(QString);
   Q_SIGNAL void requestError(const QString &errorMessage);
 
+  bool ensureCollection(); // returns true if collection is ok
   void deleteAccountCredentials(const QString &accountName);
   QJsonDocument loadAllAccountNames();
   QJsonObject loadAccountCredentials(const QString &userName);
@@ -61,9 +60,10 @@ public:
 
 protected:
   bool isAccountCredentialDataAlreadyStored(QJsonObject);
+  bool checkResult(const Sailfish::Secrets::Request &req);
 
 private:
-  void createCollection();
+  bool createCollection();
   void deleteCollection();
   void storeCollection();
 

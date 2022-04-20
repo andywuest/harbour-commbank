@@ -1,4 +1,5 @@
 /**
+
  * harbour-commbank - Sailfish OS Version
  * Copyright © 2022 Andreas Wüst (andreas.wuest.freelancer@gmail.com)
  *
@@ -15,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+#include <Sailfish/Secrets/collectionnamesrequest.h>
 #include <Sailfish/Secrets/createcollectionrequest.h>
 #include <Sailfish/Secrets/deletecollectionrequest.h>
 #include <Sailfish/Secrets/deletesecretrequest.h>
@@ -26,15 +28,36 @@
 
 #include "accountstorageservice.h"
 
+using namespace Sailfish::Secrets;
+
 const QString WALLET_COLLECTION_NAME =
     QStringLiteral("xx3"); // TODO give final name
 
 AccountStorageService::AccountStorageService(QObject *parent)
-    : QObject(parent), secretsIdentifier(Sailfish::Secrets::Secret::Identifier(
+    : QObject(parent), secretsIdentifier(Secret::Identifier(
                            QStringLiteral("secrets"), WALLET_COLLECTION_NAME,
-                           Sailfish::Secrets::SecretManager::
-                               DefaultEncryptedStoragePluginName)) {
+                           SecretManager::DefaultEncryptedStoragePluginName)) {
   qDebug() << "Initializing AccountStorageService...";
+}
+
+bool AccountStorageService::ensureCollection() {
+    CollectionNamesRequest cnr;
+    cnr.setManager(&secretManager);
+    cnr.setStoragePluginName(SecretManager::DefaultEncryptedStoragePluginName);
+    cnr.startRequest();
+    cnr.waitForFinished();
+    if(checkResult(cnr) && cnr.collectionNames().contains(WALLET_COLLECTION_NAME)) {
+        qDebug() << "Collection initialized and available !!";
+        return true;
+    }
+
+    bool initialized = createCollection();
+    if(!initialized) {
+        qDebug() << "Collection could not be initialized - storing credentials unavailable !!";
+    } else {
+        qDebug() << "Collection successfully initialized !!";
+    }
+    return initialized;
 }
 
 void AccountStorageService::loadSavedAccountData() {
@@ -47,51 +70,47 @@ void AccountStorageService::deleteAllAccountData() {
   deleteCollection();
 }
 
-void AccountStorageService::createCollection() {
+bool AccountStorageService::checkResult(const Request &req) {
+  Result result = req.result();
+  bool success = result.errorCode() == Result::NoError;
+  if (!success) {
+    qDebug() << result.errorMessage();
+  }
+  return success;
+}
+
+bool AccountStorageService::createCollection() {
   qDebug() << "AccountStorageService::createCollection";
-  Sailfish::Secrets::CreateCollectionRequest createCollection;
+  CreateCollectionRequest createCollection;
   createCollection.setManager(&secretManager);
-  createCollection.setCollectionLockType(
-      Sailfish::Secrets::CreateCollectionRequest::DeviceLock);
+  createCollection.setCollectionLockType(CreateCollectionRequest::DeviceLock);
   createCollection.setDeviceLockUnlockSemantic(
-      Sailfish::Secrets::SecretManager::DeviceLockKeepUnlocked);
-  // createCollection.setAccessControlMode(Sailfish::Secrets::SecretManager::SystemAccessControlMode);
-  createCollection.setUserInteractionMode(
-      Sailfish::Secrets::SecretManager::SystemInteraction);
+      SecretManager::DeviceLockKeepUnlocked);
+  // createCollection.setAccessControlMode(SecretManager::SystemAccessControlMode);
+  createCollection.setUserInteractionMode(SecretManager::SystemInteraction);
   createCollection.setCollectionName(WALLET_COLLECTION_NAME);
   createCollection.setStoragePluginName(
-      Sailfish::Secrets::SecretManager::DefaultEncryptedStoragePluginName);
+      SecretManager::DefaultEncryptedStoragePluginName);
   createCollection.setEncryptionPluginName(
-      Sailfish::Secrets::SecretManager::DefaultEncryptedStoragePluginName);
+      SecretManager::DefaultEncryptedStoragePluginName);
   createCollection.startRequest();
   createCollection.waitForFinished();
 
-  if (createCollection.result().errorCode()) {
-    error = AccountStorageError::ErrorCreatingAccountData;
-  }
-
-  qDebug() << createCollection.result().code();
-  qDebug() << createCollection.result().errorMessage();
+  return checkResult(createCollection);
 }
 
 void AccountStorageService::deleteCollection() {
   qDebug() << "AccountStorageService::deleteCollection";
-  Sailfish::Secrets::DeleteCollectionRequest deleteCollection;
+  DeleteCollectionRequest deleteCollection;
   deleteCollection.setManager(&secretManager);
   deleteCollection.setCollectionName(WALLET_COLLECTION_NAME);
   deleteCollection.setStoragePluginName(
-      Sailfish::Secrets::SecretManager::DefaultEncryptedStoragePluginName);
-  deleteCollection.setUserInteractionMode(
-      Sailfish::Secrets::SecretManager::SystemInteraction);
+      SecretManager::DefaultEncryptedStoragePluginName);
+  deleteCollection.setUserInteractionMode(SecretManager::SystemInteraction);
   deleteCollection.startRequest();
   deleteCollection.waitForFinished();
 
-  if (deleteCollection.result().errorCode()) {
-    error = AccountStorageError::ErrorDeletingAccountData;
-  }
-
-  qDebug() << deleteCollection.result().code();
-  qDebug() << deleteCollection.result().errorMessage();
+  checkResult(deleteCollection);
 }
 
 void AccountStorageService::storeAccountCredentials(
@@ -117,29 +136,22 @@ void AccountStorageService::storeAccountCredentials(
   qDebug() << "data to store in collection : " << documentString;
 
   // store data in wallet
-  Sailfish::Secrets::Secret secret(secretsIdentifier);
+  Secret secret(secretsIdentifier);
   secret.setData(documentString.toUtf8());
 
-  Sailfish::Secrets::StoreSecretRequest storeCode;
+  StoreSecretRequest storeCode;
   storeCode.setManager(&secretManager);
-  storeCode.setSecretStorageType(
-      Sailfish::Secrets::StoreSecretRequest::CollectionSecret);
-  storeCode.setUserInteractionMode(
-      Sailfish::Secrets::SecretManager::SystemInteraction);
+  storeCode.setSecretStorageType(StoreSecretRequest::CollectionSecret);
+  storeCode.setUserInteractionMode(SecretManager::SystemInteraction);
   storeCode.setSecret(secret);
   storeCode.startRequest();
   storeCode.waitForFinished();
 
-  if (storeCode.result().errorCode()) {
-    error = AccountStorageError::ErrorStoringAccountData;
-    emit requestError(
-        "Error Account credential data"); // TODO use enum to dertermine string
+  bool success = checkResult(storeCode);
+  if (!success) {
+      emit requestError("Error Account credential data");
   }
 
-  qDebug() << storeCode.result().code();
-  qDebug() << storeCode.result().errorMessage();
-
-  qDebug() << " trying to load stored credentials";
   loadAccountCredentials();
 }
 
@@ -151,11 +163,10 @@ void AccountStorageService::deleteAccountCredentials(
 QJsonObject AccountStorageService::loadAccountCredentials() {
   qDebug() << "AccountStorageService::loadAccountCredentials - all";
 
-  auto fetchCode = new Sailfish::Secrets::StoredSecretRequest;
+  auto fetchCode = new StoredSecretRequest;
 
   fetchCode->setManager(&secretManager);
-  fetchCode->setUserInteractionMode(
-      Sailfish::Secrets::SecretManager::SystemInteraction);
+  fetchCode->setUserInteractionMode(SecretManager::SystemInteraction);
   fetchCode->setIdentifier(secretsIdentifier);
 
   fetchCode->startRequest();
@@ -167,7 +178,7 @@ QJsonObject AccountStorageService::loadAccountCredentials() {
   qDebug() << fetchCode->result().errorCode();
   qDebug() << fetchCode->result().errorMessage();
 
-  if (fetchCode->result().code() != Sailfish::Secrets::Result::Succeeded) {
+  if (fetchCode->result().code() != Result::Succeeded) {
     QJsonObject emptyObject;
     fetchCode->deleteLater();
     return emptyObject;
@@ -183,8 +194,7 @@ QJsonObject AccountStorageService::loadAccountCredentials() {
   return document.object();
 }
 
-QJsonObject
-AccountStorageService::loadAccountCredentials(const QString &userName) {
+QJsonObject AccountStorageService::loadAccountCredentials(const QString &userName) {
   qDebug() << "AccountStorageService::loadAccountCredentials";
 
   QJsonObject object = loadAccountCredentials();

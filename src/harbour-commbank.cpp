@@ -49,6 +49,9 @@ int main(int argc, char *argv[]) {
       commbank.getAccountStorageService();
   context->setContextProperty("accountStorageService", accountStorageService);
 
+  // store information if secrets are available in context
+  context->setContextProperty("secretsAvailable", accountStorageService->ensureCollection());
+
   context->setContextProperty("applicationVersion", QString(VERSION_NUMBER));
 
   view->setSource(SailfishApp::pathTo("qml/harbour-commbank.qml"));
