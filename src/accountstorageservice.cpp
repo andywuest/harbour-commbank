@@ -31,7 +31,7 @@
 using namespace Sailfish::Secrets;
 
 const QString WALLET_COLLECTION_NAME =
-    QStringLiteral("xx3"); // TODO give final name
+    QStringLiteral("xx4"); // TODO give final name
 
 AccountStorageService::AccountStorageService(QObject *parent)
     : QObject(parent), secretsIdentifier(Secret::Identifier(
@@ -41,23 +41,25 @@ AccountStorageService::AccountStorageService(QObject *parent)
 }
 
 bool AccountStorageService::ensureCollection() {
-    CollectionNamesRequest cnr;
-    cnr.setManager(&secretManager);
-    cnr.setStoragePluginName(SecretManager::DefaultEncryptedStoragePluginName);
-    cnr.startRequest();
-    cnr.waitForFinished();
-    if(checkResult(cnr) && cnr.collectionNames().contains(WALLET_COLLECTION_NAME)) {
-        qDebug() << "Collection initialized and available !!";
-        return true;
-    }
+  CollectionNamesRequest cnr;
+  cnr.setManager(&secretManager);
+  cnr.setStoragePluginName(SecretManager::DefaultEncryptedStoragePluginName);
+  cnr.startRequest();
+  cnr.waitForFinished();
+  if (checkResult(cnr) &&
+      cnr.collectionNames().contains(WALLET_COLLECTION_NAME)) {
+    qDebug() << "Collection initialized and available !!";
+    return true;
+  }
 
-    bool initialized = createCollection();
-    if(!initialized) {
-        qDebug() << "Collection could not be initialized - storing credentials unavailable !!";
-    } else {
-        qDebug() << "Collection successfully initialized !!";
-    }
-    return initialized;
+  bool initialized = createCollection();
+  if (!initialized) {
+    qDebug() << "Collection could not be initialized - storing credentials "
+                "unavailable !!";
+  } else {
+    qDebug() << "Collection successfully initialized !!";
+  }
+  return initialized;
 }
 
 void AccountStorageService::loadSavedAccountData() {
@@ -149,7 +151,7 @@ void AccountStorageService::storeAccountCredentials(
 
   bool success = checkResult(storeCode);
   if (!success) {
-      emit requestError("Error Account credential data");
+    emit requestError("Error Account credential data");
   }
 
   loadAccountCredentials();
@@ -194,7 +196,8 @@ QJsonObject AccountStorageService::loadAccountCredentials() {
   return document.object();
 }
 
-QJsonObject AccountStorageService::loadAccountCredentials(const QString &userName) {
+QJsonObject
+AccountStorageService::loadAccountCredentials(const QString &userName) {
   qDebug() << "AccountStorageService::loadAccountCredentials";
 
   QJsonObject object = loadAccountCredentials();

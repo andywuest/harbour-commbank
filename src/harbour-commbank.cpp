@@ -50,7 +50,8 @@ int main(int argc, char *argv[]) {
   context->setContextProperty("accountStorageService", accountStorageService);
 
   // store information if secrets are available in context
-  context->setContextProperty("secretsAvailable", accountStorageService->ensureCollection());
+  context->setContextProperty("secretsAvailable",
+                              accountStorageService->ensureCollection());
 
   context->setContextProperty("applicationVersion", QString(VERSION_NUMBER));
 
