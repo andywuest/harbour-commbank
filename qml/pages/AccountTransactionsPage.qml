@@ -207,7 +207,9 @@ Page {
                     contentWidth: parent.width
 
                     onClicked: {
-                        // pageStack.push(Qt.resolvedUrl("SingleTransactionPage.qml"), {"singleTransaction": modelData, "isPortfolio": transactionsPage.isPortfolio})
+                        var selectedTransaction = transactionsModel.get(index);
+                        pageStack.push(Qt.resolvedUrl("SingleTransactionPage.qml"),
+                                       {"singleTransaction": selectedTransaction});
                     }
 
                     Item {

@@ -128,6 +128,65 @@
     </message>
 </context>
 <context>
+    <name>SingleTransactionPage</name>
+    <message>
+        <source>Portfolio Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transaction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>End-To-End-Reference</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mandate Reference</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creditor Identification Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reference</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Booking Day</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Valuation Day</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transaction Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>IBAN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Booking Text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Payer Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>BIC</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Amount</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>StoreCredentialsDialog</name>
     <message>
         <source>Store credentials</source>

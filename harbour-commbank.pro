@@ -44,6 +44,7 @@ DISTFILES += qml/harbour-commbank.qml \
     qml/pages/StoreCredentialsDialog.qml \
     qml/pages/AccountOverviewPage.qml \
     qml/pages/AccountTransactionsPage.qml \
+    qml/pages/SingleTransactionPage.qml \
     qml/components/thirdparty/LoadingIndicator.qml \
     qml/js/credentials.js \
     qml/js/functions.js \
