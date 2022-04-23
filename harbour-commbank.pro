@@ -38,7 +38,9 @@ PKGCONFIG += \
     sailfishsecrets
 
 DISTFILES += qml/harbour-commbank.qml \
+    qml/components/TransactionDetail.qml \
     qml/cover/CoverPage.qml \
+    qml/js/constants.js \
     qml/pages/CredentialsPage.qml \
     qml/pages/SecondFactorLoginPage.qml \
     qml/pages/StoreCredentialsDialog.qml \

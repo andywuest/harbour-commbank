@@ -130,11 +130,23 @@
 <context>
     <name>SingleTransactionPage</name>
     <message>
-        <source>Portfolio Item</source>
+        <source>Amount</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Transaction</source>
+        <source>Payer Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>IBAN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>BIC</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Booking Text</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -166,23 +178,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>IBAN</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Booking Text</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Payer Name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>BIC</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Amount</source>
+        <source>Transaction Details</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -203,6 +199,25 @@
     <message>
         <source>Please provide the name under which you want to store the credentials for the username &apos;%1&apos;.</source>
         <translation>Bitte geben Sie einen Namen an unter welchem Sie die Zugangsdaten für die Zugangsnummer &apos;%1&apos; speichern möchten.</translation>
+    </message>
+</context>
+<context>
+    <name>constants</name>
+    <message>
+        <source>Interest / Dividends</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Securities</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Miscellaneous</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transfer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
