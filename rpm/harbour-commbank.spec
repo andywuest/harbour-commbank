@@ -37,6 +37,7 @@ Short description of my Sailfish OS Application
 
 %build
 # >> build pre
+export VERSION_NUMBER=%{version}
 # << build pre
 
 %qmake5 
