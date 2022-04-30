@@ -2,6 +2,36 @@
 <!DOCTYPE TS>
 <TS version="2.1">
 <context>
+    <name>AboutPage</name>
+    <message>
+        <source>Version</source>
+        <extracomment>AboutPage version label</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Author</source>
+        <extracomment>AboutPage author label</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Source code</source>
+        <extracomment>AboutPage about source label</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>About Commbank</source>
+        <extracomment>AboutPage title - header
+----------
+AboutPage title - about text title</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Native client to access comdirect banking accounts. Commbank is open source and licensed under the GPL v3.</source>
+        <extracomment>AboutPage text - about text</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>AccountOverviewPage</name>
     <message>
         <source>Accounts</source>
@@ -9,6 +39,10 @@
     </message>
     <message>
         <source>Accounts Overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>About Commbank</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -130,6 +164,32 @@
 <context>
     <name>SingleTransactionPage</name>
     <message>
+        <source>Transaction Details</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>StoreCredentialsDialog</name>
+    <message>
+        <source>Store credentials</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name for the credentials</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Account credentials name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please provide the name under which you want to store the credentials for the username &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TransactionDetailsColumn</name>
+    <message>
         <source>Amount</source>
         <translation type="unfinished"></translation>
     </message>
@@ -175,29 +235,6 @@
     </message>
     <message>
         <source>Transaction Type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Transaction Details</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>StoreCredentialsDialog</name>
-    <message>
-        <source>Store credentials</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Name for the credentials</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Account credentials name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please provide the name under which you want to store the credentials for the username &apos;%1&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

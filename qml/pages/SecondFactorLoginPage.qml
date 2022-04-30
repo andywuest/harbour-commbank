@@ -21,7 +21,7 @@ import Sailfish.Silica 1.0
 import "../components/thirdparty"
 
 Page {
-    id: credentialsPage
+    id: secondFactorLoginPage
     allowedOrientations: Orientation.All
 
     property bool usernameKnown
@@ -131,10 +131,11 @@ Page {
                 anchors {
                     horizontalCenter: parent.horizontalCenter
                 }
-                visible: overviewPage.isPortrait
+                visible: secondFactorLoginPage.isPortrait
 
                 fillMode: Image.PreserveAspectFit
-                width: 1/2 * parent.width
+                width: parent.width / 2
+                height: overviewImage.width
             }
 
             SectionHeader {

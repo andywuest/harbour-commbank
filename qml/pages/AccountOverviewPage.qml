@@ -68,16 +68,16 @@ Page {
         opacity: visible ? 1 : 0
         visible: false
 
-//        PullDownMenu {
-//            MenuItem {
-//                text: qsTr("About Commbank")
-//                onClicked: pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
-//            }
+        PullDownMenu {
+            MenuItem {
+                text: qsTr("About Commbank")
+                onClicked: pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
+            }
 //            MenuItem {
 //                text: qsTr("Settings")
 //                onClicked: pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
 //            }
-//        }
+        }
 
         Column {
             id: overviewColumn
@@ -99,46 +99,43 @@ Page {
                 visible: overviewPage.isPortrait
 
                 fillMode: Image.PreserveAspectFit
-                width: 1/2 * parent.width
+                width: parent.width / 2
+                height: overviewImage.width
             }
 
             SectionHeader {
                 text: qsTr("Accounts")
             }
-//            PageHeader {
-//                id: searchHeader
-//                title: qsTr("2FA Authentication")
-//            }
 
             // TODO pruefen ob das hier sinn macht..... die naechsten beiden
-            Text {
-                id: bankNameText
-                x: Theme.horizontalPageMargin
-                width: parent.width - ( 2 * Theme.horizontalPageMargin )
-                horizontalAlignment: Text.AlignHCenter
-                font.pixelSize: Theme.fontSizeLarge
-                color: Theme.primaryColor
-                wrapMode: Text.Wrap
-                anchors {
-                    horizontalCenter: parent.horizontalCenter
-                }
-            }
+//            Text {
+//                id: bankNameText
+//                x: Theme.horizontalPageMargin
+//                width: parent.width - ( 2 * Theme.horizontalPageMargin )
+//                horizontalAlignment: Text.AlignHCenter
+//                font.pixelSize: Theme.fontSizeLarge
+//                color: Theme.primaryColor
+//                wrapMode: Text.Wrap
+//                anchors {
+//                    horizontalCenter: parent.horizontalCenter
+//                }
+//            }
 
-            Text {
-                id: bankCodeText
-                horizontalAlignment: Text.AlignHCenter
-                font.pixelSize: Theme.fontSizeMedium
-                color: Theme.primaryColor
-                anchors {
-                    horizontalCenter: parent.horizontalCenter
-                }
-            }
+//            Text {
+//                id: bankCodeText
+//                horizontalAlignment: Text.AlignHCenter
+//                font.pixelSize: Theme.fontSizeMedium
+//                color: Theme.primaryColor
+//                anchors {
+//                    horizontalCenter: parent.horizontalCenter
+//                }
+//            }
 
             SilicaListView {
 
                 id: accountsListView
 
-                height: overviewPage.height - accountsHeader.height - bankNameText.height - bankCodeText.height - ( 3 * Theme.paddingMedium ) - ( overviewPage.isPortrait ? /*overviewImage.height*/ 0 + Theme.paddingMedium : 0 )
+                height: overviewPage.height - overviewImage.height - accountsHeader.height - /*bankNameText.height - bankCodeText.height -*/ ( 3 * Theme.paddingMedium ) - ( overviewPage.isPortrait ? /*overviewImage.height*/ 0 + Theme.paddingMedium : 0 )
                 width: parent.width
                 anchors.left: parent.left
                 anchors.right: parent.right
@@ -152,8 +149,6 @@ Page {
                 delegate: ListItem {
                     contentHeight: resultItem.height + Theme.paddingMedium
                     contentWidth: parent.width
-
-                    // enabled: finTsDialog.canRetrieveTransactions(modelData.accountId) || finTsDialog.canRetrievePortfolioInfo(modelData.accountId)
 
                     onClicked: {
                         var selectedAccount = accountsModel.get(index);
@@ -228,11 +223,6 @@ Page {
             }
             overviewFlickable.visible = true;
         }
-
-        // connectSlots();
-        // loading = true;
-        // commbankAccountService.getAllBalances();
-        // TODO trigger loader of accounts
     }
 
     LoadingIndicator {
