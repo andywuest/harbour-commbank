@@ -25,6 +25,7 @@ Page {
 
     property bool loading : false
     property var accountBalances
+    property var depots
 
     function connectSlots() {
         console.log("[AccountOverviewPage] connect - slots");
@@ -191,7 +192,7 @@ Page {
                                 verticalAlignment: Text.AlignVCenter
                                 font.pixelSize: Theme.fontSizeMedium
                                 color: Theme.highlightColor
-                                text: Number(accountBalanceValue).toLocaleString(Qt.locale(), "f", 2) + " " + accountBalanceUnit
+                                text: accountBalanceValue !== "" ? Number(accountBalanceValue).toLocaleString(Qt.locale(), "f", 2) + " " + accountBalanceUnit : ""
                             }
                         }
 
@@ -209,11 +210,8 @@ Page {
                 }
 
                 VerticalScrollDecorator {}
-
             }
-
         }
-
     }
 
     Component.onCompleted: {
@@ -221,8 +219,13 @@ Page {
             for (var i = 0; i < accountBalances.length; i++) {
                 accountsModel.append(accountBalances[i])
             }
-            overviewFlickable.visible = true;
         }
+        if (depots) {
+            for (var j = 0; j < depots.length; j++) {
+                accountsModel.append(depots[j]);
+            }
+        }
+        overviewFlickable.visible = true;
     }
 
     LoadingIndicator {

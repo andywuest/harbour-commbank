@@ -25,6 +25,7 @@
 
 #include "accountstorageservice.h"
 #include "commbankaccountservice.h"
+#include "commbankbrokerageservice.h"
 #include "commbankloginservice.h"
 
 class Commbank : public QObject {
@@ -34,6 +35,7 @@ public:
   ~Commbank() = default;
 
   CommbankAccountService *getCommbankAccountService();
+  CommbankBrokerageService *getCommbankBrokerageService();
   CommbankLoginService *getCommbankLoginService();
   AccountStorageService *getAccountStorageService();
 
@@ -43,6 +45,7 @@ private:
 
   CommbankLoginService *commbankLoginService;
   CommbankAccountService *commbankAccountService;
+  CommbankBrokerageService *commbankBrokerageService;
 
   AccountStorageService *accountStorageService;
 

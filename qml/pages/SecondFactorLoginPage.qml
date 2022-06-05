@@ -32,6 +32,10 @@ Page {
     property string username
 
     property bool loading : false
+    property bool balancesLoaded : false
+    property bool depotsLoaded : false
+    property var accountBalances
+    property var depots
 
     function connectSlots() {
         console.log("[SecondFactorLoginPage] connect - slots");
@@ -41,6 +45,9 @@ Page {
         // account service
         commbankAccountService.allBalancesResultAvailable.connect(allBalancesResultHandler);
         commbankAccountService.requestError.connect(errorResultHandler);
+        // brokerage service
+        commbankBrokerageService.allDepotsResultAvailable.connect(allDepotsResultHandler);
+        commbankBrokerageService.requestError.connect(errorResultHandler);
         // account storage service
         accountStorageService.requestError.connect(errorResultHandler)
     }
@@ -53,6 +60,9 @@ Page {
         // account service
         commbankAccountService.allBalancesResultAvailable.disconnect(allBalancesResultHandler);
         commbankAccountService.requestError.disconnect(errorResultHandler);
+        // brokerage service
+        commbankBrokerageService.allDepotsResultAvailable.disconnect(allDepotsResultHandler);
+        commbankBrokerageService.requestError.disconnect(errorResultHandler);
         // account storage service
         accountStorageService.requestError.disconnect(errorResultHandler)
     }
@@ -63,15 +73,12 @@ Page {
 
         // TODO getAllBalances sollte auch Depots liefern
         commbankAccountService.getAllBalances();
+        commbankBrokerageService.getAllDepots();
     }
 
-    function allBalancesResultHandler(result) {
-        console.log("[SecondFactorLoginPage] balances received : " + result);
-        var accountBalances = JSON.parse(result);
-        loading = false;
-
+    function depotsAndBalancesLoaded(accountBalances, depots) {
         if (usernameKnown) {
-            navigateToBalancesPage(accountBalances);
+            navigateToBalancesPage(accountBalances, depots);
         } else {
             var dialog = pageStack.push(Qt.resolvedUrl("StoreCredentialsDialog.qml"), {
                                             "username": username
@@ -94,11 +101,32 @@ Page {
         }
     }
 
-    function navigateToBalancesPage(accountBalances) {
+    function allDepotsResultHandler(result) {
+        console.log("[SecondFactorLoginPage] depots received : " + result);
+        depots = JSON.parse(result);
+        depotsLoaded = true;
+        if (depotsLoaded && balancesLoaded) {
+            loading = false;
+            depotsAndBalancesLoaded(accountBalances, depots);
+        }
+    }
+
+    function allBalancesResultHandler(result) {
+        console.log("[SecondFactorLoginPage] balances received : " + result);
+        accountBalances = JSON.parse(result);
+        balancesLoaded = true;
+        if (depotsLoaded && balancesLoaded) {
+            loading = false;
+            depotsAndBalancesLoaded(accountBalances, depots);
+        }
+    }
+
+    function navigateToBalancesPage(accountBalances, depots) {
         disconnectSlots();
         pageStack.clear();
         pageStack.push(Qt.resolvedUrl("AccountOverviewPage.qml"), {
-                        "accountBalances" : accountBalances
+                        "accountBalances" : accountBalances,
+                        "depots" : depots
                        });
     }
 

@@ -256,5 +256,29 @@ AboutPage title - about text title</extracomment>
         <source>Transfer</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Savings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancellation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Direct Debit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ATM Withdrawal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Card Transaction</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 </TS>

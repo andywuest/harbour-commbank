@@ -112,7 +112,6 @@ function prettyTime(dateString, format) {
     // var date = Date.parse(dateString);
     console.log("date -> " + date)
     return date.toLocaleDateString(Qt.locale(), format)
-
 }
 
 // found here: https://stackoverflow.com/questions/17260238/how-to-insert-space-every-4-characters-for-iban-registering

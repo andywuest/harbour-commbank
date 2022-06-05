@@ -23,6 +23,8 @@ Commbank::Commbank(QObject *parent)
       settings("harbour-commbank", "settings") {
   commbankAccountService = new CommbankAccountService(
       this->networkAccessManager, this, &sessionContext);
+  commbankBrokerageService = new CommbankBrokerageService(
+      this->networkAccessManager, this, &sessionContext);
   commbankLoginService = new CommbankLoginService(this->networkAccessManager,
                                                   this, &sessionContext);
   accountStorageService = new AccountStorageService(this);
@@ -31,6 +33,10 @@ Commbank::Commbank(QObject *parent)
 
 CommbankAccountService *Commbank::getCommbankAccountService() {
   return this->commbankAccountService;
+}
+
+CommbankBrokerageService *Commbank::getCommbankBrokerageService() {
+  return this->commbankBrokerageService;
 }
 
 CommbankLoginService *Commbank::getCommbankLoginService() {

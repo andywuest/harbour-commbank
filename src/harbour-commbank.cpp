@@ -45,6 +45,11 @@ int main(int argc, char *argv[]) {
       commbank.getCommbankAccountService();
   context->setContextProperty("commbankAccountService", commbankAccountService);
 
+  CommbankBrokerageService *commbankBrokerageService =
+      commbank.getCommbankBrokerageService();
+  context->setContextProperty("commbankBrokerageService",
+                              commbankBrokerageService);
+
   AccountStorageService *accountStorageService =
       commbank.getAccountStorageService();
   context->setContextProperty("accountStorageService", accountStorageService);

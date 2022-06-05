@@ -19,6 +19,7 @@ HEADERS += \
     src/accountstorageservice.h \
     src/commbank.h \
     src/commbankaccountservice.h \
+    src/commbankbrokerageservice.h \
     src/commbankloginservice.h \
     src/constants.h \
     src/credentials.h \
@@ -29,6 +30,7 @@ SOURCES += src/harbour-commbank.cpp \
     src/accountstorageservice.cpp \
     src/commbank.cpp \
     src/commbankaccountservice.cpp \
+    src/commbankbrokerageservice.cpp \
     src/commbankloginservice.cpp \
     src/sessioncontext.cpp
 
