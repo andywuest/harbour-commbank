@@ -63,7 +63,8 @@ Page {
     SilicaFlickable {
         id: overviewFlickable
         anchors.fill: parent
-        contentHeight: overviewColumn.height
+        width: parent.width
+        height: parent.height
 
         Behavior on opacity { NumberAnimation {} }
         opacity: visible ? 1 : 0
@@ -74,10 +75,6 @@ Page {
                 text: qsTr("About Commbank")
                 onClicked: pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
             }
-//            MenuItem {
-//                text: qsTr("Settings")
-//                onClicked: pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
-//            }
         }
 
         Column {
@@ -108,35 +105,10 @@ Page {
                 text: qsTr("Accounts")
             }
 
-            // TODO pruefen ob das hier sinn macht..... die naechsten beiden
-//            Text {
-//                id: bankNameText
-//                x: Theme.horizontalPageMargin
-//                width: parent.width - ( 2 * Theme.horizontalPageMargin )
-//                horizontalAlignment: Text.AlignHCenter
-//                font.pixelSize: Theme.fontSizeLarge
-//                color: Theme.primaryColor
-//                wrapMode: Text.Wrap
-//                anchors {
-//                    horizontalCenter: parent.horizontalCenter
-//                }
-//            }
-
-//            Text {
-//                id: bankCodeText
-//                horizontalAlignment: Text.AlignHCenter
-//                font.pixelSize: Theme.fontSizeMedium
-//                color: Theme.primaryColor
-//                anchors {
-//                    horizontalCenter: parent.horizontalCenter
-//                }
-//            }
-
             SilicaListView {
-
                 id: accountsListView
 
-                height: overviewPage.height - overviewImage.height - accountsHeader.height - /*bankNameText.height - bankCodeText.height -*/ ( 3 * Theme.paddingMedium ) - ( overviewPage.isPortrait ? /*overviewImage.height*/ 0 + Theme.paddingMedium : 0 )
+                height: overviewFlickable.height - (overviewImage.visible ? overviewImage.height : 0) - accountsHeader.height - Theme.paddingMedium;
                 width: parent.width
                 anchors.left: parent.left
                 anchors.right: parent.right

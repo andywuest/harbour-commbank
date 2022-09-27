@@ -11,6 +11,7 @@
 
 * xx.xx.2022 Andreas Wüst <andreas.wuest.freelancer@gmail.com> 0.1.1-1
 - Added new about page
+- fixed scroll behaviour in account overview page
 
 * 30.04.2022 Andreas Wüst <andreas.wuest.freelancer@gmail.com> 0.1.0-1
 - Initial (alpha) release
