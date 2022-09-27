@@ -63,6 +63,10 @@
         <source>Transactions</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Load more</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CoverPage</name>

@@ -32,7 +32,7 @@ public:
   ~CommbankAccountService() = default;
 
   Q_INVOKABLE void getAllBalances();
-  Q_INVOKABLE void getTransactions(const QString &accountId);
+  Q_INVOKABLE void getTransactions(const QString &accountId, int startIndex);
 
   Q_SIGNAL void allBalancesResultAvailable(const QString &challenge);
   Q_SIGNAL void transactionsResultAvailable(const QString &result);

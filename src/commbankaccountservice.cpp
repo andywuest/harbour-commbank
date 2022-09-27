@@ -33,9 +33,10 @@ void CommbankAccountService::getAllBalances() {
   executeGetAccountBalances(QUrl(URL_ACCOUNT_BALANCES));
 }
 
-void CommbankAccountService::getTransactions(const QString &accountId) {
+void CommbankAccountService::getTransactions(const QString &accountId,
+                                             int startIndex) {
   executeGetTransactions(
-      QUrl(QString(URL_ACCOUNT_TRANSACTIONS).arg(accountId)));
+      QUrl(QString(URL_ACCOUNT_TRANSACTIONS).arg(accountId).arg(startIndex)));
 }
 
 void CommbankAccountService::executeGetTransactions(const QUrl &url) {

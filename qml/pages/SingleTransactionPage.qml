@@ -39,6 +39,7 @@ Page {
             id: singleTransactionColumn
             width: parent.width
             spacing: Theme.paddingMedium
+            bottomPadding: Theme.paddingMedium
 
             PageHeader {
                 id: singleTransactionHeader
@@ -49,8 +50,8 @@ Page {
                 width: parent.width - ( 2 * Theme.horizontalPageMargin )
                 // height: transactionPage.height - singleTransactionHeader.height
                 singleTransaction: transactionPage.singleTransaction
-            }
 
+            }
         }
 
         VerticalScrollDecorator {

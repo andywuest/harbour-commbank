@@ -37,6 +37,7 @@ const char URL_ACCOUNT_BALANCES[] =
 const char URL_BROKERAGE_DEPOTS[] =
     "https://api.comdirect.de/api/brokerage/clients/user/v3/depots";
 const char URL_ACCOUNT_TRANSACTIONS[] =
-    "https://api.comdirect.de/api/banking/v1/accounts/%1/transactions";
+    "https://api.comdirect.de/api/banking/v1/accounts/%1/"
+    "transactions?transactionState=BOOKED&paging-first=%2";
 
 #endif // CONSTANTS_H
