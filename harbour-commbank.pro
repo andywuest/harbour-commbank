@@ -42,7 +42,6 @@ PKGCONFIG += \
 DISTFILES += qml/harbour-commbank.qml \
     qml/components/TransactionDetail.qml \
     qml/components/TransactionDetailsColumn.qml \
-    qml/components/thirdparty/LabelText.qml \
     qml/cover/CoverPage.qml \
     qml/js/constants.js \
     qml/pages/AboutPage.qml \
@@ -52,7 +51,11 @@ DISTFILES += qml/harbour-commbank.qml \
     qml/pages/AccountOverviewPage.qml \
     qml/pages/AccountTransactionsPage.qml \
     qml/pages/SingleTransactionPage.qml \
+    qml/pages/icons/github.svg \
+    qml/pages/icons/paypal.svg \
     qml/components/thirdparty/LoadingIndicator.qml \
+    qml/components/thirdparty/AboutDescription.qml \
+    qml/components/thirdparty/AboutIconLabel.qml \
     qml/js/credentials.js \
     qml/js/functions.js \
     qml/icons/commbank.png \

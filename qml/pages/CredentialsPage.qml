@@ -118,6 +118,10 @@ Page {
 
         PullDownMenu {
             MenuItem {
+                text: qsTr("About Commbank")
+                onClicked: pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
+            }
+            MenuItem {
                 text: qsTr("Delete stored accounts")
                 visible: pullDownMenuModel.count > 0
                 onClicked: {

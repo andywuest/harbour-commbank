@@ -9,7 +9,7 @@ Name:       harbour-commbank
 # << macros
 
 Summary:    Client App for Commdirekt Bank
-Version:    0.1.0
+Version:    0.1.1
 Release:    1
 Group:      Qt/Qt
 License:    LICENSE

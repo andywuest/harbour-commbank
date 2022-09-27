@@ -4,30 +4,37 @@
 <context>
     <name>AboutPage</name>
     <message>
-        <source>Version</source>
-        <extracomment>AboutPage version label</extracomment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Author</source>
-        <extracomment>AboutPage author label</extracomment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Source code</source>
-        <extracomment>AboutPage about source label</extracomment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>About Commbank</source>
-        <extracomment>AboutPage title - header
-----------
-AboutPage title - about text title</extracomment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Native client to access comdirect banking accounts. Commbank is open source and licensed under the GPL v3.</source>
         <extracomment>AboutPage text - about text</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>About</source>
+        <extracomment>AboutPage - Header</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Commbank</source>
+        <extracomment>AboutPage - Name</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sources</source>
+        <extracomment>AboutPage - sources</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Donations</source>
+        <extracomment>AboutPage - Donations</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>If you like my work why not buy me a beer?</source>
+        <extracomment>AboutPage - donations info</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Donate with PayPal</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -109,6 +116,10 @@ AboutPage title - about text title</extracomment>
     <message>
         <source>Delete stored accounts</source>
         <translation>Gespeicherte Konten löschen</translation>
+    </message>
+    <message>
+        <source>About Commbank</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
