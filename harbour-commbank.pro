@@ -45,6 +45,7 @@ DISTFILES += qml/harbour-commbank.qml \
     qml/cover/CoverPage.qml \
     qml/js/constants.js \
     qml/pages/AboutPage.qml \
+    qml/pages/BrokeragePositionsPage.qml \
     qml/pages/CredentialsPage.qml \
     qml/pages/SecondFactorLoginPage.qml \
     qml/pages/StoreCredentialsDialog.qml \

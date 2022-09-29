@@ -102,3 +102,58 @@ void CommbankBrokerageService::processGetDepotsResult(QNetworkReply *reply) {
 
   emit allDepotsResultAvailable(dataToString);
 }
+
+void CommbankBrokerageService::getPositions(const QString &depotId,
+                                             int startIndex) {
+                                             // startIndex not yet used
+  executeGetPositions(
+      QUrl(QString(URL_BROKERAGE_POSITIONS).arg(depotId))); //.arg(startIndex)));
+}
+
+void CommbankBrokerageService::executeGetPositions(const QUrl &url) {
+  qDebug() << "CommbankBrokerageService::executeGetPositions " << url;
+
+  QNetworkRequest request = prepareNetworkRequest(url, true);
+  request.setRawHeader(
+      "Authorization",
+      QString("Bearer ").append(sessionContext->getAccessToken()).toUtf8());
+  request.setRawHeader("x-http-request-info",
+                       sessionContext->createRequestInfoString().toUtf8());
+
+  logRequest(url, request, nullptr);
+
+  QNetworkReply *reply = networkAccessManager->get(request);
+
+  connectErrorSlot(reply);
+  connect(reply, SIGNAL(finished()), this,
+          SLOT(handleGetPositionsFinished()));
+
+  // TODO SLOT in lambda funktion ändern
+
+}
+
+void CommbankBrokerageService::handleGetPositionsFinished() {
+  qDebug() << "CommbankBrokerageService::handleGetPositionsFinished";
+  QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
+  reply->deleteLater();
+  if (reply->error() != QNetworkReply::NoError) {
+    return;
+  }
+
+  processGetPositionsResult(reply);
+}
+
+void CommbankBrokerageService::processGetPositionsResult(
+    QNetworkReply *reply) {
+  qDebug() << "CommbankBrokerageService::processGetpositionsResult";
+  QByteArray responseData = reply->readAll();
+  QJsonDocument jsonDocument = QJsonDocument::fromJson(responseData);
+  if (!jsonDocument.isObject()) {
+    qDebug() << "response body not a json object!";
+  }
+
+  logResponse("body", reply, jsonDocument);
+
+  QString result = QString(responseData);
+  emit positionsResultAvailable(result);
+}

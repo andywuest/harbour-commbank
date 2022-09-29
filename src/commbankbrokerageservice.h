@@ -32,16 +32,21 @@ public:
   ~CommbankBrokerageService() = default;
 
   Q_INVOKABLE void getAllDepots();
+  Q_INVOKABLE void getPositions(const QString &depotId, int startIndex);
 
   Q_SIGNAL void allDepotsResultAvailable(const QString &depots);
+  Q_SIGNAL void positionsResultAvailable(const QString &positions);
 
 private:
   void executeGetDepots(const QUrl &url);
+  void executeGetPositions(const QUrl &url);
 
   void processGetDepotsResult(QNetworkReply *reply);
+  void processGetPositionsResult(QNetworkReply *reply);
 
 private slots:
   void handleGetDepotsFinished();
+  void handleGetPositionsFinished();
 };
 
 #endif // COMMBANK_BROKERAGE_SERVICE_H

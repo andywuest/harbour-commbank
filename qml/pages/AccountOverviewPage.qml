@@ -127,7 +127,12 @@ Page {
                         var selectedAccount = accountsModel.get(index);
                         console.log("[AccountOverviewPage] Selected: " + selectedAccount + ", index : " + index);
                         console.log("[AccountOverviewPage] Selected: " + selectedAccount + ", accountId : " + selectedAccount.accountId);
-                        pageStack.push(Qt.resolvedUrl("AccountTransactionsPage.qml"), {"accountId": selectedAccount.accountId});
+                        console.log("[AccountOverviewPage] Selected: " + selectedAccount + ", accountType : " + selectedAccount.accountTypeKey);
+                        if ("STANDARD_DEPOT" === selectedAccount.accountTypeKey) {
+                          pageStack.push(Qt.resolvedUrl("BrokeragePositionsPage.qml"), {"depotId": selectedAccount.accountId});
+                        } else {
+                          pageStack.push(Qt.resolvedUrl("AccountTransactionsPage.qml"), {"accountId": selectedAccount.accountId});
+                        }
                     }
 
                     Item {
