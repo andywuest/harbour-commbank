@@ -92,11 +92,11 @@ Page {
                     "username" : username
                 };
                 accountStorageService.storeAccountCredentials(credentials)
-                navigateToBalancesPage(accountBalances);
+                navigateToBalancesPage(accountBalances, depots);
             });
             dialog.rejected.connect(function () {
                 console.log("[SecondFactorLoginPage] not storing credentials data ");
-                navigateToBalancesPage(accountBalances);
+                navigateToBalancesPage(accountBalances, depots);
             });
         }
     }
