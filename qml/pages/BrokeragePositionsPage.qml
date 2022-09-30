@@ -18,6 +18,8 @@
 import QtQuick 2.6
 import Sailfish.Silica 1.0
 
+import "../components"
+
 import "../js/functions.js" as Functions
 
 // TODO remove before checkin
@@ -217,87 +219,32 @@ Page {
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.horizontalCenter: parent.horizontalCenter
 
-                            Column {
+                            BrokeragePositionColumn {
                                 width: parent.width / 4 * 1 - Theme.paddingSmall
-                                Text {
-                                    id: quantityLabel
-                                    width: parent.width
-                                    font.pixelSize: Theme.fontSizeTiny
-                                    color: Theme.secondaryColor
-                                    text: qsTr("STK/NOM")
-                                }
-                                Text {
-                                    id: quantityValue
-                                    width: parent.width
-                                    font.pixelSize: Theme.fontSizeTiny
-                                    // font.bold: true
-                                    color: Theme.secondaryHighlightColor
-                                    text: quantity.value // formatter
-                                }
+                                columnLabel: qsTr("STK/NOM")
+                                columnValue: quantity.value // formatter
                             }
-                            Column {
+                            BrokeragePositionColumn {
                                 width: parent.width / 4 * 1 - Theme.paddingSmall
-                                Text {
-                                    id: purchasePriceLabel
-                                    width: parent.width
-                                    font.pixelSize: Theme.fontSizeTiny
-                                    color: Theme.secondaryColor
-                                    text: qsTr("KAUFKURS")
-                                }
-                                Text {
-                                    id: purchasePriceValue
-                                    width: parent.width
-                                    font.pixelSize: Theme.fontSizeTiny
-                                    // font.bold: true
-                                    color: Theme.secondaryHighlightColor
-                                    text: Functions.formatAmount(purchasePrice);
-                                }
+                                columnLabel: qsTr("KAUFKURS")
+                                columnValue: Functions.formatAmount(purchasePrice);
                             }
-                            Column {
+                            BrokeragePositionColumn {
                                 width: parent.width / 4 * 1 - Theme.paddingSmall
-                                Text {
-                                    id: currentPriceLabel
-                                    width: parent.width
-                                    font.pixelSize: Theme.fontSizeTiny
-                                    color: Theme.secondaryColor
-                                    text: qsTr("AKT. KURS")
-                                }
-                                Text {
-                                    id: currentPriceValue
-                                    width: parent.width
-                                    font.pixelSize: Theme.fontSizeTiny
-                                    // font.bold: true
-                                    color: Theme.secondaryHighlightColor
-                                    text: Functions.formatAmount(currentPrice.price);
-                                }
+                                columnLabel: qsTr("AKT. KURS")
+                                columnValue: Functions.formatAmount(currentPrice.price);
                             }
-                            Column {
+                            BrokeragePositionColumn {
                                 width: parent.width / 4 * 1 - Theme.paddingSmall
-                                Text {
-                                    id: profitLossLabel
-                                    width: parent.width
-                                    font.pixelSize: Theme.fontSizeTiny
-                                    color: Theme.secondaryColor
-                                    text: qsTr("G/V")
-                                }
-                                Text {
-                                    id: profitLossValue
-                                    width: parent.width
-                                    font.pixelSize: Theme.fontSizeTiny
-                                    // font.bold: true
-                                    color: Theme.secondaryHighlightColor
-                                    text: Functions.formatAmount(profitLossPurchaseAbs);
-                                }
+                                columnLabel: qsTr("G/V")
+                                columnValue: Functions.formatAmount(profitLossPurchaseAbs);
                             }
-
                         }
 
                         Separator {
                             id: positionSeparator2
                             anchors.top : resultRowInfo.bottom
                             anchors.topMargin: Theme.paddingMedium
-
-
                             width: parent.width
                             color: Theme.primaryColor
                             horizontalAlignment: Qt.AlignHCenter
