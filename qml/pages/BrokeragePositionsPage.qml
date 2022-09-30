@@ -219,25 +219,75 @@ Page {
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.horizontalCenter: parent.horizontalCenter
 
-                            BrokeragePositionColumn {
-                                width: parent.width / 4 * 1 - Theme.paddingSmall
-                                columnLabel: qsTr("STK/NOM")
-                                columnValue: quantity.value // formatter
-                            }
-                            BrokeragePositionColumn {
-                                width: parent.width / 4 * 1 - Theme.paddingSmall
-                                columnLabel: qsTr("KAUFKURS")
-                                columnValue: Functions.formatAmount(purchasePrice);
-                            }
-                            BrokeragePositionColumn {
-                                width: parent.width / 4 * 1 - Theme.paddingSmall
-                                columnLabel: qsTr("AKT. KURS")
-                                columnValue: Functions.formatAmount(currentPrice.price);
-                            }
-                            BrokeragePositionColumn {
-                                width: parent.width / 4 * 1 - Theme.paddingSmall
-                                columnLabel: qsTr("G/V")
-                                columnValue: Functions.formatAmount(profitLossPurchaseAbs);
+                            Column {
+                                width: parent.width
+                                height: labelsRow.height + columnsRow.height
+
+                                Row {
+                                    id: labelsRow
+                                    width: parent.width
+                                    Column {
+                                        width: parent.width
+                                        Text {
+                                            id: isinMnemonicText
+                                            width: parent.width
+                                            font.pixelSize: Theme.fontSizeTiny
+                                            color: Theme.secondaryColor
+                                            elide: Text.ElideRight
+                                            text: instrument.isin + " - " + instrument.mnemonic
+                                            textFormat: Text.StyledText
+                                        }
+                                        Row {
+                                            width: parent.width
+                                            Text {
+                                                id: positionName
+                                                width: parent.width * 8 / 10
+                                                font.pixelSize: Theme.fontSizeSmall
+                                                font.bold: true
+                                                color: Theme.primaryColor
+                                                elide: Text.ElideRight
+                                                text: instrument.shortName
+                                                textFormat: Text.StyledText
+                                            }
+                                            Text {
+                                                id: positionValue
+                                                width: parent.width * 2 / 10
+                                                font.pixelSize: Theme.fontSizeSmall
+                                                font.bold: true
+                                                color: Theme.primaryColor
+                                                elide: Text.ElideRight
+                                                text: "120 €" // TODO
+                                                textFormat: Text.StyledText
+                                                horizontalAlignment: Text.AlignRight
+                                            }
+                                        }
+                                    }
+                                }
+
+                                Row {
+                                    id: columnsRow
+                                    width: parent.width
+                                    BrokeragePositionColumn {
+                                        width: parent.width / 4 * 1 - Theme.paddingSmall
+                                        columnLabel: qsTr("STK/NOM")
+                                        columnValue: quantity.value // formatter
+                                    }
+                                    BrokeragePositionColumn {
+                                        width: parent.width / 4 * 1 - Theme.paddingSmall
+                                        columnLabel: qsTr("KAUFKURS")
+                                        columnValue: Functions.formatAmount(purchasePrice);
+                                    }
+                                    BrokeragePositionColumn {
+                                        width: parent.width / 4 * 1 - Theme.paddingSmall
+                                        columnLabel: qsTr("AKT. KURS")
+                                        columnValue: Functions.formatAmount(currentPrice.price);
+                                    }
+                                    BrokeragePositionColumn {
+                                        width: parent.width / 4 * 1 - Theme.paddingSmall
+                                        columnLabel: qsTr("G/V")
+                                        columnValue: Functions.formatAmount(profitLossPurchaseAbs);
+                                    }
+                                }
                             }
                         }
 
@@ -250,79 +300,79 @@ Page {
                             horizontalAlignment: Qt.AlignHCenter
                         }
 
-                        Row {
-                            id: resultRow
-                            width: parent.width - ( 2 * Theme.horizontalPageMargin )
-                            spacing: Theme.paddingMedium
-                            anchors.verticalCenter: parent.verticalCenter
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            visible: false
-                            Column {
-                                width: parent.width / 3 * 2 - Theme.paddingSmall
-                                Text {
-                                    id: isinMnemonicText
-                                    width: parent.width
-                                    font.pixelSize: Theme.fontSizeTiny
-                                    color: Theme.secondaryColor
-                                    elide: Text.ElideRight
-                                    visible: !positionsPage.isPortfolio
-                                    text: instrument.isin + " - " + instrument.mnemonic
-                                    textFormat: Text.StyledText
-                                }
-                                Text {
-                                    id: positionName
-                                    width: parent.width
-                                    font.pixelSize: Theme.fontSizeSmall
-                                    font.bold: true
-                                    color: Theme.primaryColor
-                                    elide: Text.ElideRight
-                                    text: instrument.shortName
-                                    textFormat: Text.StyledText
-                                }
-                                Text {
-                                    id: currentValueText
-                                    width: parent.width
-                                    font.pixelSize: Theme.fontSizeTiny
-                                    color: Theme.secondaryHighlightColor
-                                    text: Functions.formatAmount(currentValue);
-                                    visible: !positionsPage.isPortfolio
-                                }
-                                Text {
-                                    id: positionPurposeText
-                                    width: parent.width
-                                    font.pixelSize: Theme.fontSizeExtraSmall
-                                    color: Theme.primaryColor
-                                    text: "aaa"
-                                        // positionsPage.isPortfolio ? ( qsTr("<b>Amount: </b> %1").arg((modelData.amountNegative ? "-" : "") + Number(modelData.amount).toLocaleString(Qt.locale(), "f", 2)) + "<br>" + qsTr("<b>Price: </b> %1 %2").arg(Number(modelData.price).toLocaleString(Qt.locale(), "f", 2)).arg(modelData.priceCurrency) ) : modelData.details.transactionPurpose
-                                    textFormat: Text.StyledText
-                                    wrapMode: Text.Wrap
-                                    elide: Text.ElideRight
-                                    maximumLineCount: 4
-                                }
-                            }
-                            Text {
-                                id: accountValueText
-                                width: parent.width / 3 * 1 - Theme.paddingSmall
-                                height: parent.height
-                                horizontalAlignment: Text.AlignRight
-                                verticalAlignment: Text.AlignVCenter
-                                font.pixelSize: Theme.fontSizeMedium
-                                color: Theme.highlightColor
-                                text: "bbbb"//Functions.formatAmount(amount);
-                            }
-                        }
+//                        Row {
+//                            id: resultRow
+//                            width: parent.width - ( 2 * Theme.horizontalPageMargin )
+//                            spacing: Theme.paddingMedium
+//                            anchors.verticalCenter: parent.verticalCenter
+//                            anchors.horizontalCenter: parent.horizontalCenter
+//                            visible: false
+//                            Column {
+//                                width: parent.width / 3 * 2 - Theme.paddingSmall
+//                                Text {
+//                                    id: isinMnemonicTextXXX
+//                                    width: parent.width
+//                                    font.pixelSize: Theme.fontSizeTiny
+//                                    color: Theme.secondaryColor
+//                                    elide: Text.ElideRight
+//                                    visible: !positionsPage.isPortfolio
+//                                    text: instrument.isin + " - " + instrument.mnemonic
+//                                    textFormat: Text.StyledText
+//                                }
+//                                Text {
+//                                    id: positionNameXXX
+//                                    width: parent.width
+//                                    font.pixelSize: Theme.fontSizeSmall
+//                                    font.bold: true
+//                                    color: Theme.primaryColor
+//                                    elide: Text.ElideRight
+//                                    text: instrument.shortName
+//                                    textFormat: Text.StyledText
+//                                }
+//                                Text {
+//                                    id: currentValueText
+//                                    width: parent.width
+//                                    font.pixelSize: Theme.fontSizeTiny
+//                                    color: Theme.secondaryHighlightColor
+//                                    text: Functions.formatAmount(currentValue);
+//                                    visible: !positionsPage.isPortfolio
+//                                }
+//                                Text {
+//                                    id: positionPurposeText
+//                                    width: parent.width
+//                                    font.pixelSize: Theme.fontSizeExtraSmall
+//                                    color: Theme.primaryColor
+//                                    text: "aaa"
+//                                        // positionsPage.isPortfolio ? ( qsTr("<b>Amount: </b> %1").arg((modelData.amountNegative ? "-" : "") + Number(modelData.amount).toLocaleString(Qt.locale(), "f", 2)) + "<br>" + qsTr("<b>Price: </b> %1 %2").arg(Number(modelData.price).toLocaleString(Qt.locale(), "f", 2)).arg(modelData.priceCurrency) ) : modelData.details.transactionPurpose
+//                                    textFormat: Text.StyledText
+//                                    wrapMode: Text.Wrap
+//                                    elide: Text.ElideRight
+//                                    maximumLineCount: 4
+//                                }
+//                            }
+//                            Text {
+//                                id: accountValueText
+//                                width: parent.width / 3 * 1 - Theme.paddingSmall
+//                                height: parent.height
+//                                horizontalAlignment: Text.AlignRight
+//                                verticalAlignment: Text.AlignVCenter
+//                                font.pixelSize: Theme.fontSizeMedium
+//                                color: Theme.highlightColor
+//                                text: "bbbb"//Functions.formatAmount(amount);
+//                            }
+//                        }
 
-                        Separator {
-                            visible: false
-                            id: positionSeparator
-                            anchors.top : resultRow.bottom
-                            anchors.topMargin: Theme.paddingMedium
+//                        Separator {
+//                            visible: false
+//                            id: positionSeparator
+//                            anchors.top : resultRow.bottom
+//                            anchors.topMargin: Theme.paddingMedium
 
 
-                            width: parent.width
-                            color: Theme.primaryColor
-                            horizontalAlignment: Qt.AlignHCenter
-                        }
+//                            width: parent.width
+//                            color: Theme.primaryColor
+//                            horizontalAlignment: Qt.AlignHCenter
+//                        }
                     }
 
                 }
