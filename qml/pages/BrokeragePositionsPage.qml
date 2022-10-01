@@ -30,7 +30,6 @@ Page {
     allowedOrientations: Orientation.All
 
     property string depotId;
-    property bool isPortfolio: false // TODO remove, i guess
     property int pageSize: 20 // page size for the backend responses (20 positions)
     property int startIndex: 0
     property bool hasMore: true;
@@ -59,6 +58,7 @@ Page {
         hasMore = ((positions.paging.index + pageSize) < positions.paging.matches)
         console.log(" more positions available : " + hasMore);
         positionsHeader.title = qsTr("Positions");
+        positionsHeader.description = qsTr("Value: %1").arg(Functions.formatAmount(positions.aggregated.currentValue));
         positionsColumn.visible = true;
     }
 
@@ -74,8 +74,8 @@ Page {
         errorColumn.visible = false;
         loadingColumn.visible = true;
         // TODO just for debuggin
-        positionsResultHandler(Credentials.positions);
-        // commbankBrokerageService.getPositions(depotId, startIndex);
+        // positionsResultHandler(Credentials.positions);
+        commbankBrokerageService.getPositions(depotId, startIndex);
     }
 
     SilicaFlickable {
@@ -84,6 +84,18 @@ Page {
         contentWidth: parent.width
         contentHeight: positionsColumn.visible ? positionsColumn.height : ( errorColumn.visible ? errorColumn.height : parent.height )
 
+        PushUpMenu {
+            visible: hasMore
+            MenuItem {
+                text: qsTr("Load more")
+                onClicked: {
+                    loadingColumn.visible = true;
+                    startIndex += pageSize;
+                    console.log("start loading from index: " + startIndex);
+                    commbankBrokerageService.getPositions(depotId, startIndex);
+                }
+            }
+        }
 
         Column {
             id: loadingColumn
@@ -119,7 +131,6 @@ Page {
                 size: BusyIndicatorSize.Large
             }
         }
-
 
         Column {
             property bool retryPossible: false
@@ -208,8 +219,7 @@ Page {
                     Item {
                         id: resultItem
                         width: parent.width
-                        height:  resultRowInfo.height + positionSeparator2.height
-                                 //+ resultRow.height + positionSeparator.height
+                        height:  resultRowInfo.height + positionSeparator.height
                         y: Theme.paddingMedium
 
                         Row {
@@ -241,7 +251,7 @@ Page {
                                             width: parent.width
                                             Text {
                                                 id: positionName
-                                                width: parent.width * 8 / 10
+                                                width: parent.width * 7 / 10
                                                 font.pixelSize: Theme.fontSizeSmall
                                                 font.bold: true
                                                 color: Theme.primaryColor
@@ -251,12 +261,12 @@ Page {
                                             }
                                             Text {
                                                 id: positionValue
-                                                width: parent.width * 2 / 10
+                                                width: parent.width * 3 / 10
                                                 font.pixelSize: Theme.fontSizeSmall
                                                 font.bold: true
                                                 color: Theme.primaryColor
                                                 elide: Text.ElideRight
-                                                text: "120 €" // TODO
+                                                text: Functions.formatAmount(currentValue);
                                                 textFormat: Text.StyledText
                                                 horizontalAlignment: Text.AlignRight
                                             }
@@ -291,100 +301,17 @@ Page {
                             }
                         }
 
-                        Separator {
-                            id: positionSeparator2
+                        RowSeparator {
+                            id: positionSeparator
                             anchors.top : resultRowInfo.bottom
-                            anchors.topMargin: Theme.paddingMedium
-                            width: parent.width
-                            color: Theme.primaryColor
-                            horizontalAlignment: Qt.AlignHCenter
                         }
-
-//                        Row {
-//                            id: resultRow
-//                            width: parent.width - ( 2 * Theme.horizontalPageMargin )
-//                            spacing: Theme.paddingMedium
-//                            anchors.verticalCenter: parent.verticalCenter
-//                            anchors.horizontalCenter: parent.horizontalCenter
-//                            visible: false
-//                            Column {
-//                                width: parent.width / 3 * 2 - Theme.paddingSmall
-//                                Text {
-//                                    id: isinMnemonicTextXXX
-//                                    width: parent.width
-//                                    font.pixelSize: Theme.fontSizeTiny
-//                                    color: Theme.secondaryColor
-//                                    elide: Text.ElideRight
-//                                    visible: !positionsPage.isPortfolio
-//                                    text: instrument.isin + " - " + instrument.mnemonic
-//                                    textFormat: Text.StyledText
-//                                }
-//                                Text {
-//                                    id: positionNameXXX
-//                                    width: parent.width
-//                                    font.pixelSize: Theme.fontSizeSmall
-//                                    font.bold: true
-//                                    color: Theme.primaryColor
-//                                    elide: Text.ElideRight
-//                                    text: instrument.shortName
-//                                    textFormat: Text.StyledText
-//                                }
-//                                Text {
-//                                    id: currentValueText
-//                                    width: parent.width
-//                                    font.pixelSize: Theme.fontSizeTiny
-//                                    color: Theme.secondaryHighlightColor
-//                                    text: Functions.formatAmount(currentValue);
-//                                    visible: !positionsPage.isPortfolio
-//                                }
-//                                Text {
-//                                    id: positionPurposeText
-//                                    width: parent.width
-//                                    font.pixelSize: Theme.fontSizeExtraSmall
-//                                    color: Theme.primaryColor
-//                                    text: "aaa"
-//                                        // positionsPage.isPortfolio ? ( qsTr("<b>Amount: </b> %1").arg((modelData.amountNegative ? "-" : "") + Number(modelData.amount).toLocaleString(Qt.locale(), "f", 2)) + "<br>" + qsTr("<b>Price: </b> %1 %2").arg(Number(modelData.price).toLocaleString(Qt.locale(), "f", 2)).arg(modelData.priceCurrency) ) : modelData.details.transactionPurpose
-//                                    textFormat: Text.StyledText
-//                                    wrapMode: Text.Wrap
-//                                    elide: Text.ElideRight
-//                                    maximumLineCount: 4
-//                                }
-//                            }
-//                            Text {
-//                                id: accountValueText
-//                                width: parent.width / 3 * 1 - Theme.paddingSmall
-//                                height: parent.height
-//                                horizontalAlignment: Text.AlignRight
-//                                verticalAlignment: Text.AlignVCenter
-//                                font.pixelSize: Theme.fontSizeMedium
-//                                color: Theme.highlightColor
-//                                text: "bbbb"//Functions.formatAmount(amount);
-//                            }
-//                        }
-
-//                        Separator {
-//                            visible: false
-//                            id: positionSeparator
-//                            anchors.top : resultRow.bottom
-//                            anchors.topMargin: Theme.paddingMedium
-
-
-//                            width: parent.width
-//                            color: Theme.primaryColor
-//                            horizontalAlignment: Qt.AlignHCenter
-//                        }
                     }
-
                 }
 
                 VerticalScrollDecorator {}
 
             }
-
-
         }
-
-
     }
 
 }

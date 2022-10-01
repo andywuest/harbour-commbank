@@ -41,6 +41,7 @@ PKGCONFIG += \
 
 DISTFILES += qml/harbour-commbank.qml \
     qml/components/BrokeragePositionColumn.qml \
+    qml/components/RowSeparator.qml \
     qml/components/TransactionDetail.qml \
     qml/components/TransactionDetailsColumn.qml \
     qml/cover/CoverPage.qml \

@@ -105,7 +105,7 @@ Page {
 
             Image {
                 id: commbankLoadingImage
-                source: "../../icons/commbank.png"
+                source: "../icons/commbank.png"
                 anchors {
                     horizontalCenter: parent.horizontalCenter
                 }
