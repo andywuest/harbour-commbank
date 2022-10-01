@@ -104,10 +104,9 @@ void CommbankBrokerageService::processGetDepotsResult(QNetworkReply *reply) {
 }
 
 void CommbankBrokerageService::getPositions(const QString &depotId,
-                                             int startIndex) {
-                                             // startIndex not yet used
+                                            int startIndex) {
   executeGetPositions(
-      QUrl(QString(URL_BROKERAGE_POSITIONS).arg(depotId))); //.arg(startIndex)));
+      QUrl(QString(URL_BROKERAGE_POSITIONS).arg(depotId).arg(startIndex)));
 }
 
 void CommbankBrokerageService::executeGetPositions(const QUrl &url) {
@@ -125,11 +124,9 @@ void CommbankBrokerageService::executeGetPositions(const QUrl &url) {
   QNetworkReply *reply = networkAccessManager->get(request);
 
   connectErrorSlot(reply);
-  connect(reply, SIGNAL(finished()), this,
-          SLOT(handleGetPositionsFinished()));
+  connect(reply, SIGNAL(finished()), this, SLOT(handleGetPositionsFinished()));
 
   // TODO SLOT in lambda funktion ändern
-
 }
 
 void CommbankBrokerageService::handleGetPositionsFinished() {
@@ -143,8 +140,7 @@ void CommbankBrokerageService::handleGetPositionsFinished() {
   processGetPositionsResult(reply);
 }
 
-void CommbankBrokerageService::processGetPositionsResult(
-    QNetworkReply *reply) {
+void CommbankBrokerageService::processGetPositionsResult(QNetworkReply *reply) {
   qDebug() << "CommbankBrokerageService::processGetpositionsResult";
   QByteArray responseData = reply->readAll();
   QJsonDocument jsonDocument = QJsonDocument::fromJson(responseData);

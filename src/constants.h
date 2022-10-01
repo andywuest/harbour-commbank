@@ -37,9 +37,10 @@ const char URL_ACCOUNT_BALANCES[] =
 const char URL_BROKERAGE_DEPOTS[] =
     "https://api.comdirect.de/api/brokerage/clients/user/v3/depots";
 const char URL_ACCOUNT_TRANSACTIONS[] =
-    "https://api.comdirect.de/api/banking/v1/accounts/%1/" // accountId
+    "https://api.comdirect.de/api/banking/v1/accounts/%1/"  // accountId
     "transactions?transactionState=BOOKED&paging-first=%2"; // startIndex
 const char URL_BROKERAGE_POSITIONS[] =
-    "https://api.comdirect.de/api/brokerage/v3/depots/%1/positions?with-attr=instrument"; // depotId
+    "https://api.comdirect.de/api/brokerage/v3/depots/%1/positions?"
+    "with-attr=instrument&paging-first=%2"; // depotId, startIndex
 
 #endif // CONSTANTS_H
