@@ -23,7 +23,7 @@ import "../components"
 import "../js/functions.js" as Functions
 
 // TODO remove before checkin
-import "../js/credentials.js" as Credentials
+// import "../js/credentials.js" as Credentials
 
 Page {
     id: positionsPage
@@ -57,7 +57,9 @@ Page {
         }
         hasMore = ((positions.paging.index + pageSize) < positions.paging.matches)
         console.log(" more positions available : " + hasMore);
+        //: BrokeragePositionsPage Positions text
         positionsHeader.title = qsTr("Positions");
+        //: BrokeragePositionsPage Positions value
         positionsHeader.description = qsTr("Value: %1").arg(Functions.formatAmount(positions.aggregated.currentValue));
         positionsColumn.visible = true;
     }
@@ -87,6 +89,7 @@ Page {
         PushUpMenu {
             visible: hasMore
             MenuItem {
+                //: BrokeragePositionsPage Load more
                 text: qsTr("Load more")
                 onClicked: {
                     loadingColumn.visible = true;
@@ -121,6 +124,7 @@ Page {
 
             InfoLabel {
                 id: loadingLabel
+                //: BrokeragePositionsPage Retrieving information
                 text: qsTr("Retrieving information...")
             }
 
@@ -279,22 +283,26 @@ Page {
                                     width: parent.width
                                     BrokeragePositionColumn {
                                         width: parent.width / 4 * 1 - Theme.paddingSmall
-                                        columnLabel: qsTr("STK/NOM")
+                                        //: BrokeragePositionsPage pieces/nominales
+                                        columnLabel: qsTr("PCS/NOM")
                                         columnValue: quantity.value // formatter
                                     }
                                     BrokeragePositionColumn {
                                         width: parent.width / 4 * 1 - Theme.paddingSmall
-                                        columnLabel: qsTr("KAUFKURS")
+                                        //: BrokeragePositionsPage purchase price
+                                        columnLabel: qsTr("PUR. PRICE")
                                         columnValue: Functions.formatAmount(purchasePrice);
                                     }
                                     BrokeragePositionColumn {
                                         width: parent.width / 4 * 1 - Theme.paddingSmall
-                                        columnLabel: qsTr("AKT. KURS")
+                                        //: BrokeragePositionsPage current price
+                                        columnLabel: qsTr("CURR. PRICE")
                                         columnValue: Functions.formatAmount(currentPrice.price);
                                     }
                                     BrokeragePositionColumn {
                                         width: parent.width / 4 * 1 - Theme.paddingSmall
-                                        columnLabel: qsTr("G/V")
+                                        //: BrokeragePositionsPage profit / loss
+                                        columnLabel: qsTr("P/L")
                                         columnValue: Functions.formatAmount(profitLossPurchaseAbs);
                                     }
                                 }

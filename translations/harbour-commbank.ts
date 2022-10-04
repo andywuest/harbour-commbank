@@ -69,6 +69,49 @@
     </message>
 </context>
 <context>
+    <name>BrokeragePositionsPage</name>
+    <message>
+        <source>Positions</source>
+        <extracomment>BrokeragePositionsPage Positions text</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Retrieving information...</source>
+        <extracomment>BrokeragePositionsPage Retrieving information</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load more</source>
+        <extracomment>BrokeragePositionsPage Load more</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value: %1</source>
+        <extracomment>BrokeragePositionsPage Positions value</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PCS/NOM</source>
+        <extracomment>BrokeragePositionsPage pieces/nominales</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PUR. PRICE</source>
+        <extracomment>BrokeragePositionsPage purchase price</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CURR. PRICE</source>
+        <extracomment>BrokeragePositionsPage current price</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>P/L</source>
+        <extracomment>BrokeragePositionsPage profit / loss</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CoverPage</name>
     <message>
         <source>Commbank Cover</source>
