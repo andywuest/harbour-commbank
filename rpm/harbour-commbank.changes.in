@@ -9,9 +9,11 @@
 # the git-change-log command provided with Sailfish OS SDK), create a
 # harbour-commbank.changes.run script to let mb2 run the required commands for you.
 
-* xx.xx.2022 Andreas Wüst <andreas.wuest.freelancer@gmail.com> 0.1.1-1
+* 04.10.2022 Andreas Wüst <andreas.wuest.freelancer@gmail.com> 0.2.0-1
 - Added new about page
 - fixed scroll behaviour in account overview page
+- Display portfolio positions
+- Updated loading of transactions (last 180 days are possible), 20 at a time
 
 * 30.04.2022 Andreas Wüst <andreas.wuest.freelancer@gmail.com> 0.1.0-1
 - Initial (alpha) release
