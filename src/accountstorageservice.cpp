@@ -31,7 +31,7 @@
 using namespace Sailfish::Secrets;
 
 const QString WALLET_COLLECTION_NAME =
-    QStringLiteral("xx6"); // TODO give final name
+    QStringLiteral("xx4"); // TODO give final name
 
 AccountStorageService::AccountStorageService(QObject *parent)
     : QObject(parent), secretsIdentifier(Secret::Identifier(
