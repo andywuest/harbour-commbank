@@ -125,8 +125,10 @@ Page {
                 text: qsTr("Delete stored accounts")
                 visible: pullDownMenuModel.count > 0
                 onClicked: {
-                    accountStorageService.deleteAllAccountData();
-                    pullDownMenuModel.clear();
+                    var remorse = Remorse.popupAction(root, "", function () {
+                        accountStorageService.deleteAllAccountData();
+                        pullDownMenuModel.clear();
+                    }, 4000);
                 }
             }
             Repeater {

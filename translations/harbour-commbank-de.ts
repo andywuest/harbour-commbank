@@ -65,7 +65,7 @@
     </message>
     <message>
         <source>Load more</source>
-        <translation type="unfinished"></translation>
+        <translation>Mehr laden</translation>
     </message>
 </context>
 <context>

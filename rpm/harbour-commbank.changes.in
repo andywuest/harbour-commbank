@@ -9,6 +9,9 @@
 # the git-change-log command provided with Sailfish OS SDK), create a
 # harbour-commbank.changes.run script to let mb2 run the required commands for you.
 
+* xx.xx.xxxx Andreas Wüst <andreas.wuest.freelancer@gmail.com> 0.2.1-1
+- added remorse timer when deleting account credentials
+
 * 04.10.2022 Andreas Wüst <andreas.wuest.freelancer@gmail.com> 0.2.0-1
 - Added new about page
 - fixed scroll behaviour in account overview page

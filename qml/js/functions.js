@@ -90,6 +90,13 @@ function getMappedCurrency(currency) {
     return currency;
 }
 
+function renderAccountBalance(balanceValue, balanceUnit) {
+    if (balanceValue && balanceValue !== '') {
+         return Number(balanceValue).toLocaleString(Qt.locale(), "f", 2) + " " + balanceUnit;
+    }
+    return "";
+}
+
 function formatAmount(amount) {
     if (amount) {
        return Number(amount.value).toLocaleString(Qt.locale(), "f", 2) + " " + getMappedCurrency(amount.unit);

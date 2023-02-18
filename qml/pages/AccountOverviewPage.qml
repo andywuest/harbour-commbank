@@ -20,45 +20,15 @@ import Sailfish.Silica 1.0
 
 import "../components/thirdparty"
 
+import "../js/constants.js" as Constants
+import "../js/functions.js" as Functions
+
 Page {
     id: overviewPage
 
     property bool loading : false
     property var accountBalances
     property var depots
-
-    function connectSlots() {
-        console.log("[AccountOverviewPage] connect - slots");
-        //commbankAccountService.allBalancesResultAvailable.connect(allBalancesResultHandler);
-        //commbankAccountService.requestError.connect(errorResultHandler);
-    }
-
-    function disconnectSlots() {
-        console.log("[AccountOverviewPage] disconnect - slots");
-        //commbankAccountService.allBalancesResultAvailable.disconnect(allBalancesResultHandler);
-        //commbankAccountService.requestError.disconnect(errorResultHandler);
-    }
-
-    function allBalancesResultHandler(result) {
-//        // TODO move to 2FA page
-//        console.log("[AccountOverviewPage] balances received : " + result);
-//        loading = false;
-
-//        var accounts = JSON.parse(result);
-
-//        for (var i = 0; i < accounts.length; i++) {
-//            accountsModel.append(accounts[i])
-//        }
-
-//        overviewFlickable.visible = true;
-    }
-
-    function errorResultHandler(result) {
-//        console.log("[AccountOverviewPage] error received - " + result);
-//        errorInfoLabel.visible = true;
-//        errorDetailInfoLabel.text = result;
-//        loading = false;
-    }
 
     SilicaFlickable {
         id: overviewFlickable
@@ -128,7 +98,7 @@ Page {
                         console.log("[AccountOverviewPage] Selected: " + selectedAccount + ", index : " + index);
                         console.log("[AccountOverviewPage] Selected: " + selectedAccount + ", accountId : " + selectedAccount.accountId);
                         console.log("[AccountOverviewPage] Selected: " + selectedAccount + ", accountType : " + selectedAccount.accountTypeKey);
-                        if ("STANDARD_DEPOT" === selectedAccount.accountTypeKey) {
+                        if (Constants.ACCOUNT_TYPE_DEPOT === selectedAccount.accountTypeKey) {
                           pageStack.push(Qt.resolvedUrl("BrokeragePositionsPage.qml"), {"depotId": selectedAccount.accountId});
                         } else {
                           pageStack.push(Qt.resolvedUrl("AccountTransactionsPage.qml"), {"accountId": selectedAccount.accountId});
@@ -169,7 +139,8 @@ Page {
                                 verticalAlignment: Text.AlignVCenter
                                 font.pixelSize: Theme.fontSizeMedium
                                 color: Theme.highlightColor
-                                text: accountBalanceValue !== "" ? Number(accountBalanceValue).toLocaleString(Qt.locale(), "f", 2) + " " + accountBalanceUnit : ""
+                                text: Functions.renderAccountBalance(accountBalanceValue, accountBalanceUnit)
+                                    // accountBalanceValue !== "" ? Number(accountBalanceValue).toLocaleString(Qt.locale(), "f", 2) + " " + accountBalanceUnit : ""
                             }
                         }
 
