@@ -56,7 +56,7 @@ Page {
             positionsModel.append(positions.values[i])
         }
         hasMore = ((positions.paging.index + pageSize) < positions.paging.matches)
-        console.log(" more positions available : " + hasMore);
+        console.log("[BrokeragePositionsPage] more positions available : " + hasMore);
         //: BrokeragePositionsPage Positions text
         positionsHeader.title = qsTr("Positions");
         //: BrokeragePositionsPage Positions value
@@ -94,7 +94,7 @@ Page {
                 onClicked: {
                     loadingColumn.visible = true;
                     startIndex += pageSize;
-                    console.log("start loading from index: " + startIndex);
+                    console.log("[BrokeragePositionsPage] start loading from index: " + startIndex);
                     commbankBrokerageService.getPositions(depotId, startIndex);
                 }
             }
@@ -214,8 +214,8 @@ Page {
 
                     onClicked: {
                         var selectedPosition = positionsModel.get(index);
-                        console.log("selection position index : " + index);
-                        console.log("position : " + selectedPosition);
+                        console.log("[BrokeragePositionsPage] selection position index : " + index);
+                        console.log("[BrokeragePositionsPage] position : " + selectedPosition);
 //                        pageStack.push(Qt.resolvedUrl("SingleTransactionPage.qml"),
 //                                       {"singleTransaction": selectedTransaction});
                     }
