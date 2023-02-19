@@ -21,7 +21,14 @@ import "pages"
 
 ApplicationWindow
 {
-    initialPage: Component { CredentialsPage { } }
+    id: app
+
+    Component {
+        id: credentialsPage
+        CredentialsPage { }
+    }
+
+    initialPage: credentialsPage
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
     allowedOrientations: defaultAllowedOrientations
 }

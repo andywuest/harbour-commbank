@@ -59,7 +59,7 @@ void AbstractService::logRequest(const QUrl url, QNetworkRequest request,
                                     "x-once-authentication-info",
                                     "x-http-request-info", "Authorization"};
 
-  foreach (QByteArray head, request.rawHeaderList()) {
+  foreach (const QByteArray &head, request.rawHeaderList()) {
     if (relevantHeaders.contains(QString(head))) {
       logMessage = logMessage.append(" * header [%1] = %2\n")
                        .arg(QString(head), QString(request.rawHeader(head)));
@@ -98,7 +98,7 @@ void AbstractService::logResponse(QString info, QNetworkReply *reply,
                                     "x-once-authentication-info",
                                     "x-http-request-info", "Authorization"};
 
-  foreach (QByteArray head, reply->rawHeaderList()) {
+  foreach (const QByteArray &head, reply->rawHeaderList()) {
     if (relevantHeaders.contains(QString(head))) {
       logMessage = logMessage.append(" * header [%1]  = %2\n")
                        .arg(QString(head), QString(reply->rawHeader(head)));
@@ -129,9 +129,9 @@ void AbstractService::connectErrorSlot(QNetworkReply *reply) {
           static_cast<void (QNetworkReply::*)(QNetworkReply::NetworkError)>(
               &QNetworkReply::error),
           [=](QNetworkReply::NetworkError error) {
-            QByteArray result = reply->readAll();
+            const QByteArray &result = reply->readAll();
+            reply->deleteLater();
 
-            // TODO test reply->deleteLater();
             qWarning() << "AbstractService::handleRequestError:"
                        << static_cast<int>(error) << reply->errorString()
                        << result;
