@@ -61,7 +61,7 @@ void AbstractService::logRequest(const QUrl url, QNetworkRequest request,
 
   foreach (QByteArray head, request.rawHeaderList()) {
     if (relevantHeaders.contains(QString(head))) {
-      logMessage = logMessage.append(" * header [%1]  = %2\n")
+      logMessage = logMessage.append(" * header [%1] = %2\n")
                        .arg(QString(head), QString(request.rawHeader(head)));
     }
   }

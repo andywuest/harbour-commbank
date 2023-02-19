@@ -46,6 +46,7 @@ DISTFILES += qml/harbour-commbank.qml \
     qml/components/TransactionDetailsColumn.qml \
     qml/cover/CoverPage.qml \
     qml/js/constants.js \
+    qml/js/credentials.js \
     qml/pages/AboutPage.qml \
     qml/pages/BrokeragePositionsPage.qml \
     qml/pages/CredentialsPage.qml \
@@ -74,6 +75,8 @@ SAILFISHAPP_ICONS = 86x86 108x108 128x128 172x172
 # to disable building translations every time, comment out the
 # following CONFIG line
 CONFIG += sailfishapp_i18n
+
+INCLUDEPATH += /usr/include/Sailfish
 
 # German translation is enabled as an example. If you aren't
 # planning to localize your app, remember to comment out the
